@@ -1,7 +1,7 @@
 # Hardware design : raesp_gateway
 
 ## Schematic
-![image](https://user-images.githubusercontent.com/5003708/165724702-2c5c48fa-0586-41e2-8aff-7cb9616be127.png)
+![image](https://user-images.githubusercontent.com/5003708/165725247-3897b6a5-5015-4e39-a204-d65079145670.png)
 
 ## Renders
 ![image](https://user-images.githubusercontent.com/5003708/165725012-3e659d6b-9f66-424f-8d72-e4b180f1d4bb.png)
