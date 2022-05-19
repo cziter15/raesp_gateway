@@ -1660,7 +1660,7 @@
     (property "Reference" "C1" (id 0) (at 88.392 40.64 0)
       (effects (font (size 1 1)) (justify left))
     )
-    (property "Value" "22µf" (id 1) (at 88.392 42.545 0)
+    (property "Value" "10µf" (id 1) (at 88.392 42.545 0)
       (effects (font (size 1 1)) (justify left))
     )
     (property "Footprint" "Capacitor_Tantalum_SMD:CP_EIA-3216-10_Kemet-I" (id 2) (at 86.487 41.275 0)
@@ -2109,7 +2109,7 @@
       (reference "#PWR0108") (unit 1) (value "+3V3") (footprint "")
     )
     (path "/5723f912-a642-4b64-a661-21e0c8eeaa69"
-      (reference "C1") (unit 1) (value "22µf") (footprint "Capacitor_Tantalum_SMD:CP_EIA-3216-10_Kemet-I")
+      (reference "C1") (unit 1) (value "10µf") (footprint "Capacitor_Tantalum_SMD:CP_EIA-3216-10_Kemet-I")
     )
     (path "/54e331c4-c732-4227-b0b4-3a997ea83835"
       (reference "C2") (unit 1) (value "10µf") (footprint "Capacitor_Tantalum_SMD:CP_EIA-3216-10_Kemet-I")
