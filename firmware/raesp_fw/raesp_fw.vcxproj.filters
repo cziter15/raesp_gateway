@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\apps">
+      <UniqueIdentifier>{e2bb4db5-667b-42a4-ad29-29f73fe03f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\apps\config">
+      <UniqueIdentifier>{2cf402a0-eac3-4280-ba8d-64e21d927a4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\apps\raesp">
+      <UniqueIdentifier>{1fdc048d-e14f-4038-b4cd-c463e6d11f1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\apps\raesp\comps">
+      <UniqueIdentifier>{924bc06a-e81c-4662-8f84-b3f1dfdca335}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\apps\raesp\RF">
+      <UniqueIdentifier>{3f88a01c-8dd9-4395-8f05-be60e3e7d804}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.raesp_fw.vsarduino.h" />
+    <ClInclude Include="apps\config\RaespDeviceConfig.h">
+      <Filter>Source Files\apps\config</Filter>
+    </ClInclude>
+    <ClInclude Include="apps\raesp\RaespDevice.h">
+      <Filter>Source Files\apps\raesp</Filter>
+    </ClInclude>
+    <ClInclude Include="apps\raesp\RF\NexaTransmitter.h">
+      <Filter>Source Files\apps\raesp\RF</Filter>
+    </ClInclude>
+    <ClInclude Include="apps\raesp\RF\NingboTransmitter.h">
+      <Filter>Source Files\apps\raesp\RF</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="raesp_fw.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="apps\config\RaespDeviceConfig.cpp">
+      <Filter>Source Files\apps\config</Filter>
+    </ClCompile>
+    <ClCompile Include="apps\raesp\RaespDevice.cpp">
+      <Filter>Source Files\apps\raesp</Filter>
+    </ClCompile>
+    <ClCompile Include="apps\raesp\RF\NexaTransmitter.cpp">
+      <Filter>Source Files\apps\raesp\RF</Filter>
+    </ClCompile>
+    <ClCompile Include="apps\raesp\RF\NingboTransmitter.cpp">
+      <Filter>Source Files\apps\raesp\RF</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
