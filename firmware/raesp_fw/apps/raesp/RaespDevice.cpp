@@ -42,9 +42,8 @@ bool RaespDevice::init()
 	RadioModule = std::make_shared<Module>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN);
 	RadioFrontend = std::make_shared<SX1278>(RadioModule.get());
 
-	/* Setup FSK, then OOK. */
-	RadioFrontend->beginFSK(433.928F);
-	RadioFrontend->setOOK(true);
+	/* Setup OOK. */
+	RadioFrontend->beginFSK(TRANSMIT_FREQ, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
 
 	/* Initialize protocols. */
 	NexaRF = std::make_shared<NexaTransmitter>(CFG_DIO2_PIN, CFG_RADIO_LED);
