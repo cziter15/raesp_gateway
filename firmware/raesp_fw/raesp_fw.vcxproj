@@ -121,6 +121,7 @@
     <ClInclude Include="apps\raesp\RaespDevice.h" />
     <ClInclude Include="apps\raesp\RF\NexaTransmitter.h" />
     <ClInclude Include="apps\raesp\RF\NingboTransmitter.h" />
+    <ClInclude Include="apps\raesp\RF\RFMacros.h" />
     <ClInclude Include="__vm\.raesp_fw.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>

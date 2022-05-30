@@ -39,6 +39,9 @@
     <ClInclude Include="apps\raesp\RF\NingboTransmitter.h">
       <Filter>Source Files\apps\raesp\RF</Filter>
     </ClInclude>
+    <ClInclude Include="apps\raesp\RF\RFMacros.h">
+      <Filter>Source Files\apps\raesp\RF</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="raesp_fw.ino" />

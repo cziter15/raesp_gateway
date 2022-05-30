@@ -38,7 +38,7 @@ bool RaespDevice::init()
 		mqtt_sp->onDisconnected->registerEvent(disEventHandle_sp, std::bind(&RaespDevice::onMqttDisconnected, this));
 	}
 	
-	/* Initialize Radio Module and Frontend. */
+	/* Initialize Radio Module / radio backend. */
 	RadioModule = std::make_shared<Module>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN);
 	RadioFrontend = std::make_shared<SX1278>(RadioModule.get());
 
