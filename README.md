@@ -1,5 +1,5 @@
 # Project: RaEsp gateway
-**Ra-02 (SX1278) + ESP12 (ESP8266) gateway**
+**Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
 ![image](https://user-images.githubusercontent.com/5003708/170980003-db36dbac-3acd-40c6-91ce-88ca44854413.png)
 
