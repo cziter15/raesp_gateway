@@ -9,7 +9,7 @@ Few years ago, when I've started with designing electronics for fun, I've create
 I've decided to switch to Ra-02 instead of RFM110W. It's theoretically a lot better, because it's programmable and is not only transmitter, but transceiver. That means that I can receive and send messages and I'm not limited to OOK as it even supports LoRA, FSK and more!
 
 ## Hardware overview
-To build my PCB, I've used limited number of components - few capacitors, resistors, LDO regulator that converts 5V coming from USB to 3.3V required by modules (AMS1117), ESP12E (ESP8266 based module) that is application brain and also brings WiFi connectivity and RA-02 (SX1278 based module) doing all the RF thing.
+To build my PCB, I've used limited number of components - few capacitors, resistors, LDO regulator that converts 5V coming from USB to 3.3V required by modules (AMS1117), ESP12-S (ESP8266 based module) that is application brain and also brings WiFi connectivity and RA-02 (SX1278 based module) doing all the RF thing.
 
 ## Software overview
 Currently stub only, based on ksIotFramework that controls OOK devices.
