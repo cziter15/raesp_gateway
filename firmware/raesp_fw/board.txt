@@ -1,8 +1,0 @@
-# ksIotFramework build property overrides
-#
-
-compiler.cpp.extra_flags=-ffast-math -frtti
-
-network.password=ota_ksiotframework
-network.auth_upload=yes
-network.port=8266

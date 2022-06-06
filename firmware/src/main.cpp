@@ -10,6 +10,6 @@ void setup()
 // the loop function runs over and over again until power down or reset
 void loop()
 {
-	RUN_APP_BLOCKING_LOOPED(RaespDevice)
-	RUN_APP_BLOCKING_LOOPED(RaespDeviceConfig)
+	RUN_APP_BLOCKING_LOOPED(raesp::RaespDevice)
+	RUN_APP_BLOCKING_LOOPED(config::RaespDeviceConfig)
 }
