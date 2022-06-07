@@ -4,12 +4,12 @@
 // the setup function runs once when you press reset or power the board
 void setup()
 {
-	ksf::initKsfFramework();
+	KSF_FRAMEWORK_INIT()
 }
 
 // the loop function runs over and over again until power down or reset
 void loop()
 {
-	RUN_APP_BLOCKING_LOOPED(raesp::RaespDevice)
-	RUN_APP_BLOCKING_LOOPED(config::RaespDeviceConfig)
+	KSF_RUN_APP_BLOCKING_LOOPED(raesp::RaespDevice)
+	KSF_RUN_APP_BLOCKING_LOOPED(config::RaespDeviceConfig)
 }
