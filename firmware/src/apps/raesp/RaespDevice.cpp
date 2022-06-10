@@ -28,10 +28,10 @@ namespace raesp
 			return false;
 
 		/* ArduinoOTA is allowed to start AFTER app initialization, because tcpip must be initialized. */
-		ArduinoOTA.begin();
 		ArduinoOTA.setHostname(config::RaespDeviceConfig::RaespDeviceName);
 		ArduinoOTA.setPassword("ota_ksiotframework");
-
+		ArduinoOTA.begin();
+		
 		/* Bind to MQTT callbacks. */
 		if (auto mqtt_sp = mqtt_wp.lock())
 		{
