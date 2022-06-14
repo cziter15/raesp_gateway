@@ -11,7 +11,7 @@ namespace raesp
 {
 	namespace protocols
 	{
-		void ningbo_bit(const proto_pins& pins, const char bitChar)
+		void tx_ningbo_bit(const proto_pins& pins, const char bitChar)
 		{
 			bool isHigh = bitChar == '1';
 			if (bitChar == '0' || isHigh)
@@ -39,23 +39,23 @@ namespace raesp
 			}
 		}
 
-		void ningbo_bitarrray(const proto_pins& pins, const char * bitArrayStr)
+		void tx_ningbo_bitarrray(const proto_pins& pins, const char * bitArrayStr)
 		{
 			for (; *bitArrayStr != 0; ++bitArrayStr)
-				ningbo_bit(pins, *bitArrayStr);
+				tx_ningbo_bit(pins, *bitArrayStr);
 		}
 
-		void ningbo_transmit(const proto_pins& pins, bool blnOn, uint32_t transmitterId)
+		void tx_ningbo_switch(const proto_pins& pins, bool blnOn, uint32_t switchId)
 		{
 			proto_high_for(pins, PULSE_SHORT_A);
 			proto_low_for(pins, PULSE_ULTRA_LONG);
 
-			ningbo_bitarrray(pins, "1000");
+			tx_ningbo_bitarrray(pins, "1000");
 
 			for (int8_t b = 0; b < 7; ++b)
-				ningbo_bit(pins, ((uint32_t)(transmitterId & ((uint32_t)1 << b)) != 0) ? '1' : '0');
+				tx_ningbo_bit(pins, ((uint32_t)(switchId & ((uint32_t)1 << b)) != 0) ? '1' : '0');
 
-			ningbo_bit(pins, blnOn ? 'H' : 'L');
+			tx_ningbo_bit(pins, blnOn ? 'H' : 'L');
 		}
 	}
 }

@@ -7,20 +7,20 @@ namespace raesp
 {
 	namespace protocols
 	{
-		void nexa_bit(const proto_pins& pins, bool b)
+		void tx_nexa_bit(const proto_pins& pins, bool b)
 		{
 			proto_high_for(pins, PULSE_TIME);
 			proto_low_for(pins, b ? PULSE_TIME * 5 : PULSE_TIME);
 		}
 
-		void nexa_pair(const proto_pins& pins, bool b)
+		void tx_nexa_pair(const proto_pins& pins, bool b)
 		{
 			// Send the Manchester Encoded data 01 or 10, never 11 or 00
-			nexa_bit(pins, b);
-			nexa_bit(pins, !b);
+			tx_nexa_bit(pins, b);
+			tx_nexa_bit(pins, !b);
 		}
 
-		void nexa_transmit(const proto_pins& pins, bool blnOn, uint32_t transmitterId, int8_t recipient, int8_t level)
+		void tx_nexa_switch(const proto_pins& pins, bool blnOn, uint32_t transmitterId, int8_t recipient, int8_t level)
 		{
 			// start pulse
 			proto_high_for(pins, PULSE_TIME);
@@ -28,30 +28,30 @@ namespace raesp
 
 			// Send Device Address..
 			for (int8_t i = 25; i >= 0; --i)
-				nexa_pair(pins, (uint32_t)(transmitterId & ((uint32_t)1 << i)) != 0);
+				tx_nexa_pair(pins, (uint32_t)(transmitterId & ((uint32_t)1 << i)) != 0);
 
 			// Send 26th bit - group 1/0
-			nexa_pair(pins, recipient == -1);
+			tx_nexa_pair(pins, recipient == -1);
 
 			if (level > 0)
 			{
 				// dimmer level was given send 00
-				nexa_bit(pins, false);
-				nexa_bit(pins, false);
+				tx_nexa_bit(pins, false);
+				tx_nexa_bit(pins, false);
 			}
 			else
 			{
 				// Send 27th bit - on/off 1/0
-				nexa_pair(pins, blnOn);
+				tx_nexa_pair(pins, blnOn);
 			}
 
 			// 4 bits - recipient
 			for (int8_t i = 3; i >= 0; --i)
-				nexa_pair(pins, (recipient & (1 << i)) != 0);
+				tx_nexa_pair(pins, (recipient & (1 << i)) != 0);
 
 			if (level > 0)
 				for (int8_t i = 3; i >= 0; --i)
-					nexa_pair(pins, (level & (1 << i)) != 0);
+					tx_nexa_pair(pins, (level & (1 << i)) != 0);
 
 			// stop pulse
 			proto_high_for(pins, PULSE_TIME);

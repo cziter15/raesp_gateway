@@ -100,9 +100,9 @@ namespace raesp::comps
 			noInterrupts();
 			
 			if (command.unit == -1)
-				protocols::ningbo_transmit({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address);
+				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address);
 			else
-				protocols::nexa_transmit({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address, command.unit);
+				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address, command.unit);
 			
 			interrupts();
 		}

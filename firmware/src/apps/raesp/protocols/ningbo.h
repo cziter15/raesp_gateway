@@ -6,6 +6,6 @@ namespace raesp
 {
 	namespace protocols
 	{
-		extern void ningbo_transmit(const proto_pins& pins, bool blnOn, uint32_t transmitterId);
+		extern void tx_ningbo_switch(const proto_pins& pins, bool blnOn, uint32_t switchId);
 	}
 }
