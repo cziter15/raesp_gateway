@@ -1,7 +1,7 @@
 # Project: RaEsp gateway
 **Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
-![image](https://user-images.githubusercontent.com/5003708/173429338-e5245446-812f-4d70-a3d8-3fe98e6aad48.png)
+![image](https://user-images.githubusercontent.com/5003708/173669777-388dff07-4e13-40c4-8ef1-e9e413eb32a5.png)
 
 ## Project goal
 Few years ago, when I've started with designing electronics for fun, I've created something like WiFi Controlled 433 remote for RC power outlets that I've bought from the store. First iteration was something very bad, when I've had no idea how to design PCB, just connected all the pins on two layer board and poured layers with GND. It worked, but not as stable as expected. Then I've redesigned the board, with respect to minimize current loops, but still... not everything working as expected. More info  [here](https://hackaday.io/project/163833-wifi-to-433-mhz-bridge).
