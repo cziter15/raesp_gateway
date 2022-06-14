@@ -19,7 +19,7 @@ namespace raesp
 
 		/* Create LED components. */
 		wifiLed_wp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
-		radioLed_wp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
+		auto radioLed_wp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
 
 		/* Create RadioCommander component. */
 		radioCommander_wp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLed_wp, radioLed_wp);

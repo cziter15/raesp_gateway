@@ -11,7 +11,7 @@ namespace raesp
 	class RaespDevice : public ksf::ksApplication
 	{
 		protected:
-			std::weak_ptr<ksf::comps::ksLed> wifiLed_wp, radioLed_wp;
+			std::weak_ptr<ksf::comps::ksLed> wifiLed_wp;
 
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;
 			std::weak_ptr<comps::RadioCommander> radioCommander_wp;
