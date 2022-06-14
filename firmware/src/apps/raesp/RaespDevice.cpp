@@ -22,7 +22,7 @@ namespace raesp
 		radioLed_wp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
 
 		/* Create RadioCommander component. */
-		radioCommander_wp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, radioLed_wp, wifiLed_wp);
+		radioCommander_wp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLed_wp, radioLed_wp);
 
 		/* Try to initialize superclass. It will initialize our components and tcpip (due to WiFi component). */
 		if (!ksApplication::init())
