@@ -82,7 +82,7 @@ namespace raesp::comps
 			if (commandQueue.empty())
 				radioFrontend->transmitDirect();
 
-			commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 9 : 6)});
+			commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9)});
 		}
 	}
 
