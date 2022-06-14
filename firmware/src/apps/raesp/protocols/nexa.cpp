@@ -55,10 +55,7 @@ namespace raesp
 
 			// stop pulse
 			proto_high_for(pins, PULSE_TIME);
-			proto_low_for(pins, PULSE_TIME);
-			
-			// no need to wait as it will never be one after anotther (app loop)
-			//proto_low_for(pins, PULSE_TIME * 40);
+			proto_low_for(pins, PULSE_TIME * 40 - 1000); //decrease by one ms (app tick)
 		}
 	}
 }
