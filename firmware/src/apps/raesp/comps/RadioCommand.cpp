@@ -9,25 +9,24 @@ using namespace std::placeholders;
 
 namespace raesp::comps
 {
-	RadioCommander::RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, uint8_t statusPin) 
-		: ledPin(statusPin)
+	RadioCommander::RadioCommander(	uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, ksLedWP wifiLed, ksLedWP radioLed )
+		: radioLed_wp(radioLed), wifiLed_wp(wifiLed)
 	{
-		radioModule = std::make_shared<Module>(ssPin, dio0pin, rstPin, dio2pin);
-		radioFrontend = std::make_shared<SX1278>(radioModule.get());
+		/* Instantiate radio PHY/Module. */
+		radioPhy = std::make_shared<Module>(ssPin, dio0pin, rstPin, dio2pin);
+		radioModule = std::make_shared<SX1278>(radioPhy.get());
 
-		radioFrontend->beginFSK(TRANSMIT_FREQ, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
+		/* Setup radio module. */
+		radioModule->beginFSK(TRANSMIT_FREQ, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
 
+		/* Setup radio TX pin. */
 		pinMode(dio2pin, OUTPUT);
-		pinMode(ledPin, OUTPUT);
-
 		digitalWrite(dio2pin, LOW);
-		digitalWrite(ledPin, LOW);
 	}
 
 	bool RadioCommander::init(ksf::ksComposable* owner)
 	{
 		mqtt_wp = owner->findComponent<ksf::comps::ksMqttConnector>();
-		wifiLed_wp = owner->findComponent<ksf::comps::ksLed>();
 
 		if (auto mqtt_sp = mqtt_wp.lock())
 		{
@@ -80,7 +79,7 @@ namespace raesp::comps
 			}
 
 			if (commandQueue.empty())
-				radioFrontend->transmitDirect();
+				radioModule->transmitDirect();
 
 			commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9)});
 		}
@@ -90,22 +89,25 @@ namespace raesp::comps
 	{
 		commandQueue = {};
 
-		if (radioFrontend)
-			radioFrontend->standby();
+		if (radioModule)
+			radioModule->standby();
 	}
 
 	void RadioCommander::handleRadioCommand(RadioCommand &command)
 	{
-		noInterrupts();
-		
-		if (command.unit == -1)
-			protocols::ningbo_transmit({radioModule->getGpio(), ledPin}, command.enable, command.address);
-		else
-			protocols::nexa_transmit({radioModule->getGpio(), ledPin}, command.enable, command.address, command.unit);
-		
-		interrupts();
-		
-		command.retries--;
+		if (auto radioLed_sp = radioLed_wp.lock())
+		{
+			noInterrupts();
+			
+			if (command.unit == -1)
+				protocols::ningbo_transmit({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address);
+			else
+				protocols::nexa_transmit({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address, command.unit);
+			
+			interrupts();
+		}
+
+		command.repeats--;
 	}
 
 	bool RadioCommander::loop()
@@ -115,7 +117,7 @@ namespace raesp::comps
 			auto& currentCommand = commandQueue.front();
 			handleRadioCommand(currentCommand);
 			
-			if (currentCommand.retries <= 0)
+			if (currentCommand.repeats <= 0)
 			{
 				sendMqttInfo(
 					"RadioCmd: Sent! "
@@ -127,7 +129,7 @@ namespace raesp::comps
 				commandQueue.pop();
 				
 				if (commandQueue.empty())
-					radioFrontend->standby();
+					radioModule->standby();
 			}
 		}
 

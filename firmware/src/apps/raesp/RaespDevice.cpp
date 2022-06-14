@@ -14,12 +14,15 @@ namespace raesp
 		addComponent<ksf::comps::ksWifiConnector>(config::RaespDeviceConfig::RaespDeviceName);
 		addComponent<ksf::comps::ksMqttDebugResponder>();
 
-		/* Create mqttConnector and statusLed components. */
+		/* Create mqttConnector component. */
 		mqtt_wp = addComponent<ksf::comps::ksMqttConnector>();
-		statusLed_wp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
+
+		/* Create LED components. */
+		wifiLed_wp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
+		radioLed_wp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
 
 		/* Create RadioCommander component. */
-		radioCommander_wp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, CFG_RADIO_LED);
+		radioCommander_wp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, radioLed_wp, wifiLed_wp);
 
 		/* Try to initialize superclass. It will initialize our components and tcpip (due to WiFi component). */
 		if (!ksApplication::init())
@@ -38,7 +41,7 @@ namespace raesp
 		}
 
 		/* Start LED blinking on finished init. */
-		if (auto statusLed_sp = statusLed_wp.lock())
+		if (auto statusLed_sp = wifiLed_wp.lock())
 			statusLed_sp->setBlinking(500);
 
 		/* We want to stop RF before flash start. */
@@ -53,13 +56,13 @@ namespace raesp
 
 	void RaespDevice::onMqttDisconnected()
 	{
-		if (auto statusLed_sp = statusLed_wp.lock())
+		if (auto statusLed_sp = wifiLed_wp.lock())
 			statusLed_sp->setBlinking(500);
 	}
 
 	void RaespDevice::onMqttConnected()
 	{
-		if (auto statusLed_sp = statusLed_wp.lock())
+		if (auto statusLed_sp = wifiLed_wp.lock())
 			statusLed_sp->setBlinking(0);
 	}
 
