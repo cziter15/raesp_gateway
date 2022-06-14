@@ -60,7 +60,7 @@ namespace raesp::comps
 					if (!wifiLed_sp->isBlinking())
 						wifiLed_sp->setBlinking(100, 5);
 
-				sendMqttInfo("RadioCommander: Queue is full, discarding request!");
+				sendMqttInfo("RadioCmd: Queue is full, discarding!");
 				return;
 			}
 
