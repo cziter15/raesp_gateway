@@ -18,15 +18,15 @@ namespace raesp::comps
 	class RadioCommander : public ksf::ksComponent
 	{
 		protected:
-			std::shared_ptr<Module> RadioModule;
-			std::shared_ptr<SX1278> RadioFrontend;
+			std::shared_ptr<Module> radioModule;
+			std::shared_ptr<SX1278> radioFrontend;
 
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;
 			std::weak_ptr<ksf::comps::ksLed> wifiLed_wp;
 
 			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandle_sp, msgEventHandle_sp;
 
-			uint8_t ledPin, txPin;
+			uint8_t ledPin;
 
 			std::queue<RadioCommand> commandQueue;
 

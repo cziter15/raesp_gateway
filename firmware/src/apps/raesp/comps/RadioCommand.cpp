@@ -10,16 +10,17 @@ using namespace std::placeholders;
 namespace raesp::comps
 {
 	RadioCommander::RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, uint8_t statusPin) 
-		: ledPin(statusPin), txPin(dio2pin)
+		: ledPin(statusPin)
 	{
-		RadioModule = std::make_shared<Module>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN);
-		RadioFrontend = std::make_shared<SX1278>(RadioModule.get());
-		RadioFrontend->beginFSK(TRANSMIT_FREQ, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
+		radioModule = std::make_shared<Module>(ssPin, dio0pin, rstPin, dio2pin);
+		radioFrontend = std::make_shared<SX1278>(radioModule.get());
 
-		pinMode(txPin, OUTPUT);		// transmitter pin.
-		pinMode(ledPin, OUTPUT);	// led indicator pin
+		radioFrontend->beginFSK(TRANSMIT_FREQ, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
 
-		digitalWrite(txPin, LOW);
+		pinMode(dio2pin, OUTPUT);
+		pinMode(ledPin, OUTPUT);
+
+		digitalWrite(dio2pin, LOW);
 		digitalWrite(ledPin, LOW);
 	}
 
@@ -72,7 +73,7 @@ namespace raesp::comps
 			}
 
 			if (commandQueue.empty())
-				RadioFrontend->transmitDirect();
+				radioFrontend->transmitDirect();
 
 			commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 9 : 6)});
 		}
@@ -82,8 +83,8 @@ namespace raesp::comps
 	{
 		commandQueue = {};
 
-		if (RadioFrontend)
-			RadioFrontend->standby();
+		if (radioFrontend)
+			radioFrontend->standby();
 	}
 
 	void RadioCommander::handleRadioCommand(const RadioCommand &command)
@@ -91,9 +92,9 @@ namespace raesp::comps
 		noInterrupts();
 
 		if (command.unit == -1)
-			protocols::ningbo_transmit({txPin, ledPin}, command.enable, command.address);
+			protocols::ningbo_transmit({radioModule->getGpio(), ledPin}, command.enable, command.address);
 		else
-			protocols::nexa_transmit({txPin, ledPin}, command.enable, command.address, command.unit);
+			protocols::nexa_transmit({radioModule->getGpio(), ledPin}, command.enable, command.address, command.unit);
 
 		interrupts();
 	}
@@ -119,7 +120,7 @@ namespace raesp::comps
 				commandQueue.pop();
 				
 				if (commandQueue.empty())
-					RadioFrontend->standby();
+					radioFrontend->standby();
 			}
 		}
 
