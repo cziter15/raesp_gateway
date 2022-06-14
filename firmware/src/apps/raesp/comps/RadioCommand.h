@@ -33,7 +33,9 @@ namespace raesp::comps
 			void onMqttMessage(const String& topic, const String& payload);
 			void onMqttConnected();
 
-			void IRAM_ATTR handleRadioCommand(const RadioCommand& cmd);
+			void sendMqttInfo(const String& info);
+
+			void IRAM_ATTR handleRadioCommand(RadioCommand& cmd);
 			
 		public:
 			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, uint8_t statusPin);

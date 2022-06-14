@@ -44,6 +44,12 @@ namespace raesp::comps
 			mqtt_sp->subscribe("#");
 	}
 
+	void RadioCommander::sendMqttInfo(const String& info)
+	{
+		if (auto mqtt_sp = mqtt_wp.lock())
+			mqtt_wp.lock()->publish("log", info);
+	}
+
 	void RadioCommander::onMqttMessage(const String& topic, const String& payload)
 	{
 		if (payload.length() == 1)
@@ -54,6 +60,7 @@ namespace raesp::comps
 					if (!wifiLed_sp->isBlinking())
 						wifiLed_sp->setBlinking(100, 5);
 
+				sendMqttInfo("RadioCommander: Queue is full, discarding request!");
 				return;
 			}
 
@@ -87,35 +94,35 @@ namespace raesp::comps
 			radioFrontend->standby();
 	}
 
-	void RadioCommander::handleRadioCommand(const RadioCommand &command)
+	void RadioCommander::handleRadioCommand(RadioCommand &command)
 	{
 		noInterrupts();
-
+		
 		if (command.unit == -1)
 			protocols::ningbo_transmit({radioModule->getGpio(), ledPin}, command.enable, command.address);
 		else
 			protocols::nexa_transmit({radioModule->getGpio(), ledPin}, command.enable, command.address, command.unit);
-
+		
 		interrupts();
+		
+		command.retries--;
 	}
 
 	bool RadioCommander::loop()
 	{
 		if (!commandQueue.empty())
 		{
-			auto& nextCmd = commandQueue.front();
-			handleRadioCommand(nextCmd);
+			auto& currentCommand = commandQueue.front();
+			handleRadioCommand(currentCommand);
 			
-			if (--nextCmd.retries <= 0)
+			if (currentCommand.retries <= 0)
 			{
-				if (auto mqtt_sp = mqtt_wp.lock())
-				{
-					mqtt_wp.lock()->publish("log", 
-						"Radio command [A: " + String(nextCmd.address) + 
-						", U: " + String(nextCmd.unit) + 
-						"], with value: " + String(nextCmd.enable)
-					);
-				}
+				sendMqttInfo(
+					"RadioCmd: Sent! "
+					"[ A: " + String(currentCommand.address) + 
+					" | U: " + String(currentCommand.unit) + 
+					" | V: " + String(currentCommand.enable) + " ]"
+				);
 
 				commandQueue.pop();
 				
