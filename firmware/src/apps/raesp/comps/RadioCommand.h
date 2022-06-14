@@ -24,7 +24,7 @@ namespace raesp::comps
 			std::shared_ptr<SX1278> radioModule;
 
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;
-			std::weak_ptr<ksf::comps::ksLed> wifiLed_wp, radioLed_wp;
+			std::weak_ptr<ksf::comps::ksLed> radioLed_wp, wifiLed_wp;
 
 			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandle_sp, msgEventHandle_sp;
 
