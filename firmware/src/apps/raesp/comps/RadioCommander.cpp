@@ -51,18 +51,28 @@ namespace raesp::comps
 
 	void RadioCommander::onMqttMessage(const String& topic, const String& payload)
 	{
+		/* Radio commander payload should be one char ('1' or '0') */
 		if (payload.length() == 1)
 		{
+			/* Check command queue overflow. */
 			if (commandQueue.size() > 20)
 			{
+				/* If overflow, then blink RED wifi LED. */
 				if (auto wifiLed_sp = wifiLed_wp.lock())
 					if (!wifiLed_sp->isBlinking())
 						wifiLed_sp->setBlinking(100, 5);
 
+				/* ... and tell MQTT via log channel about that. */
 				sendMqttInfo("RadioCmd: Queue is full - discarding!");
 				return;
 			}
 
+			/*	
+				Try split topic.
+
+				Topics like OOK/1234/16 will be handled by nexa protocol.
+				Topics like OOK/1 will be handled by ningbo protocol.
+			 */
 			auto delim_idx = topic.indexOf('/');
 
 			uint32_t address{0};
@@ -78,17 +88,21 @@ namespace raesp::comps
 				address = topic.toInt();
 			}
 
+			/* If command queue is empty, enable transmitter and.. */
 			if (commandQueue.empty())
 				radioModule->transmitDirect();
 
+			/* Push address/unit to command queue. */
 			commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9)});
 		}
 	}
 
 	void RadioCommander::forceStandby()
 	{
+		/* Erase command queue. */
 		commandQueue = {};
 
+		/* Set randio module standby state. */
 		if (radioModule)
 			radioModule->standby();
 	}
@@ -99,6 +113,7 @@ namespace raesp::comps
 		{
 			noInterrupts();
 			
+			/* Here we decide if we use ningbo protocol or nexa protocol. */
 			if (command.unit == -1)
 				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address);
 			else
@@ -114,9 +129,14 @@ namespace raesp::comps
 	{
 		if (!commandQueue.empty())
 		{
+			/* 
+				Handle single 'repeat' of OOK message request. 
+				One request per application loop.
+			*/
 			auto& currentCommand = commandQueue.front();
 			handleRadioCommand(currentCommand);
 			
+			/* Check if it's last repeat. */
 			if (currentCommand.repeats <= 0)
 			{
 				sendMqttInfo(
@@ -126,8 +146,10 @@ namespace raesp::comps
 					" | V: " + String(currentCommand.enable) + " ]"
 				);
 
+				/* Pop current request (remove) from queue, coz we are done with it. */
 				commandQueue.pop();
 				
+				/* If command queue is empty now, we can set RF module to standby state. */
 				if (commandQueue.empty())
 					radioModule->standby();
 			}

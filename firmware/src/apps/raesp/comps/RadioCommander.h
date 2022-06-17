@@ -20,15 +20,15 @@ namespace raesp::comps
 		using ksLedWP = std::weak_ptr<ksf::comps::ksLed>;
 		
 		protected:
-			std::shared_ptr<Module> radioPhy;
-			std::shared_ptr<SX1278> radioModule;
+			std::shared_ptr<Module> radioPhy;													//< Radio Phy module ptr.
+			std::shared_ptr<SX1278> radioModule;												//< Radio Module ptr.
 
-			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;
-			std::weak_ptr<ksf::comps::ksLed> radioLed_wp, wifiLed_wp;
+			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;									//< Weak pointer to mqtt connector.
+			std::weak_ptr<ksf::comps::ksLed> radioLed_wp, wifiLed_wp;							//< Weak pointers to LEDs.
 
-			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandle_sp, msgEventHandle_sp;
+			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandle_sp, msgEventHandle_sp;		//< Shared ptrs to events.
 
-			std::queue<RadioCommand> commandQueue;
+			std::queue<RadioCommand> commandQueue;												//< Radio commadn queue.
 
 			void onMqttMessage(const String& topic, const String& payload);
 			void onMqttConnected();
