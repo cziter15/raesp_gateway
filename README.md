@@ -1,4 +1,6 @@
 # Project: RaEsp gateway
+[![Device Firmware](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml/badge.svg)](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml)
+
 **Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
 ![image](https://user-images.githubusercontent.com/5003708/173669777-388dff07-4e13-40c4-8ef1-e9e413eb32a5.png)
