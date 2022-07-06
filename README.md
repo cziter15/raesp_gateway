@@ -4,6 +4,7 @@
 [![Lines of code](https://img.shields.io/tokei/lines/github/cziter15/raesp_gateway)](https://github.com/cziter15/raesp_gateway/tree/main/firmware)
 [![Commit activity](https://img.shields.io/github/commit-activity/m/cziter15/raesp_gateway)](https://github.com/cziter15/raesp_gateway/commits/main)
 [![Device Firmware](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml/badge.svg)](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml)
+[![License](https://img.shields.io/github/license/cziter15/raesp_gateway)](https://github.com/cziter15/raesp_gateway/blob/main/LICENSE)
 
 **Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
