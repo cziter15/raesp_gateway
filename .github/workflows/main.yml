@@ -1,4 +1,4 @@
-name: Device Firmware
+name: device firmware
 on:
   workflow_dispatch:
   push:
