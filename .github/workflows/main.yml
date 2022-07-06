@@ -1,5 +1,9 @@
 name: Device Firmware
-on: [push]
+on:
+  push:
+    paths:
+      - 'firmware/**'
+      - '.github/workflows/**'
 
 jobs:
   build-for-device:
