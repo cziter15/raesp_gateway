@@ -1,5 +1,6 @@
 name: Device Firmware
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'firmware/**'
