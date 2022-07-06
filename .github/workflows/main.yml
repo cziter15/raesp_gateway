@@ -32,5 +32,5 @@ jobs:
     - name: Upload firmware artifact
       uses: actions/upload-artifact@v3
       with:
-        name: firmware
+        name: RaespFirmware
         path: firmware/.pio/build/esp8266dev/firmware.bin
