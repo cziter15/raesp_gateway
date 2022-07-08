@@ -4,6 +4,7 @@
 [![Lines of code](https://img.shields.io/tokei/lines/github/cziter15/raesp_gateway)](https://github.com/cziter15/raesp_gateway/tree/main/firmware)
 [![Commit activity](https://img.shields.io/github/commit-activity/m/cziter15/raesp_gateway)](https://github.com/cziter15/raesp_gateway/commits/main)
 [![Device Firmware](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml/badge.svg)](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml)
+[![Uptime](https://img.shields.io/uptimerobot/ratio/7/m792213804-f2383aceac2cc3f690b14d63)](https://stats.uptimerobot.com/M2OGni2JND)
 
 **Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
