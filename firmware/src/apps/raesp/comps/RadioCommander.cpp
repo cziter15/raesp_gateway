@@ -40,7 +40,7 @@ namespace raesp::comps
 	void RadioCommander::onMqttConnected()
 	{
 		if (auto mqtt_sp = mqtt_wp.lock())
-			mqtt_sp->subscribe("rfswitch/#");
+			mqtt_sp->subscribe(rfTopicPrefix + "#");
 	}
 
 	void RadioCommander::sendMqttInfo(const String& info)
@@ -51,10 +51,8 @@ namespace raesp::comps
 
 	void RadioCommander::onMqttMessage(const String& topic, const String& payload)
 	{
-		if (!topic.startsWith("rfswitch/"))
+		if (!topic.startsWith(rfTopicPrefix))
 			return;
-
-		String commandTopic = topic.substring(9);
 
 		/* Radio commander payload should be one char ('1' or '0') */
 		if (payload.length() == 1)
@@ -78,19 +76,19 @@ namespace raesp::comps
 				Topics like OOK/1234/16 will be handled by nexa protocol.
 				Topics like OOK/1 will be handled by ningbo protocol.
 			 */
-			auto delim_idx = commandTopic.indexOf('/');
+			auto delim_idx = topic.indexOf('/', rfTopicPrefix.length());
 
 			uint32_t address{0};
 			int16_t unit{-1};
 			
 			if (delim_idx >= 0)
 			{
-				address = commandTopic.substring(0, delim_idx).toInt();
-				unit = commandTopic.substring(delim_idx + 1).toInt();
+				address = topic.substring(9, delim_idx).toInt();
+				unit = topic.substring(delim_idx + 1).toInt();
 			}
 			else
 			{
-				address = commandTopic.toInt();
+				address = topic.substring(rfTopicPrefix.length()).toInt();
 			}
 
 			/* If command queue is empty, enable transmitter and.. */
