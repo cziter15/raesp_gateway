@@ -1,5 +1,6 @@
 #pragma once
 #include <ksIotFrameworkLib.h>
+#include "ArduinoOTA.h"
 
 namespace raesp
 {
@@ -11,6 +12,8 @@ namespace raesp
 	class RaespDevice : public ksf::ksApplication
 	{
 		protected:
+			ArduinoOTAClass ArduinoOTA;
+
 			std::weak_ptr<ksf::comps::ksLed> wifiLed_wp;
 
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;

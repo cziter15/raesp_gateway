@@ -2,7 +2,6 @@
 #include "board.h"
 #include "../config/RaespDeviceConfig.h"
 #include "comps/RadioCommander.h"
-#include "ArduinoOTA.h"
 
 using namespace std::placeholders;
 
