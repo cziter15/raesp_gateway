@@ -114,15 +114,11 @@ namespace raesp::comps
 	{
 		if (auto radioLed_sp = radioLed_wp.lock())
 		{
-			noInterrupts();
-			
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
 			if (command.unit == -1)
 				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address);
 			else
 				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address, command.unit);
-			
-			interrupts();
 		}
 
 		command.repeats--;
