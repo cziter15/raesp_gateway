@@ -46,7 +46,7 @@ namespace raesp::comps
 	void RadioCommander::sendMqttInfo(const String& info)
 	{
 		if (auto mqtt_sp = mqtt_wp.lock())
-			mqtt_wp.lock()->publish("log", info);
+			mqtt_sp->publish("log", info);
 	}
 
 	void RadioCommander::onMqttMessage(const String& topic, const String& payload)
@@ -128,7 +128,7 @@ namespace raesp::comps
 	{
 		if (!commandQueue.empty())
 		{
-			/* 
+			/*
 				Handle single 'repeat' of OOK message request. 
 				One request per application loop.
 			*/
