@@ -1,9 +1,11 @@
 name: device firmware
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'firmware/**'
+  schedule:
+    - cron: '0 0 * * *'
+#  push:
+#    paths:
+ #     - 'firmware/**'
 
 jobs:
   build-for-device:
