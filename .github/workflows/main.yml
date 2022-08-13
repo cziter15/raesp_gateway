@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: RaespFirmware-${{ github.run_id }}
-        path: .pio/build/esp8266dev/firmware.bin
+        path: firmware/.pio/build/esp8266dev/firmware.bin
