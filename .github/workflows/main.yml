@@ -33,6 +33,7 @@ jobs:
         pip install --upgrade platformio
     - name: Build with PlatformIO
       run: |
+        cd firmware
         pio upgrade
         pio run
     - name: Deploy firmware artifact
