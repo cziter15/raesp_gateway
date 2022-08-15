@@ -9,7 +9,7 @@ using namespace std::placeholders;
 
 namespace raesp::comps
 {
-	RadioCommander::RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, ksLedWP wifiLed, ksLedWP radioLed)
+	RadioCommander::RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, ksLedWP wifiLedWp, ksLedWP radioLedWp)
 		: radioLedWp(radioLedWp), wifiLedWp(wifiLedWp)
 	{
 		/* Instantiate radio PHY/Module. */
