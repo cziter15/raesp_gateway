@@ -9,8 +9,8 @@ using namespace std::placeholders;
 
 namespace raesp::comps
 {
-	RadioCommander::RadioCommander(	uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, ksLedWP wifiLed, ksLedWP radioLed )
-		: radioLed_wp(radioLed), wifiLed_wp(wifiLed)
+	RadioCommander::RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, ksLedWP wifiLed, ksLedWP radioLed)
+		: radioLedWp(radioLedWp), wifiLedWp(wifiLedWp)
 	{
 		/* Instantiate radio PHY/Module. */
 		radioPhy = std::make_shared<Module>(ssPin, dio0pin, rstPin, dio2pin);
@@ -26,12 +26,12 @@ namespace raesp::comps
 
 	bool RadioCommander::init(ksf::ksComposable* owner)
 	{
-		mqtt_wp = owner->findComponent<ksf::comps::ksMqttConnector>();
+		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
 
-		if (auto mqtt_sp = mqtt_wp.lock())
+		if (auto mqttConnSp = mqttConnWp.lock())
 		{
-			mqtt_sp->onConnected->registerEvent(connEventHandle_sp, std::bind(&RadioCommander::onMqttConnected, this));
-			mqtt_sp->onMesssage->registerEvent(msgEventHandle_sp, std::bind(&RadioCommander::onMqttMessage, this, _1, _2));
+			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RadioCommander::onMqttConnected, this));
+			mqttConnSp->onMesssage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttMessage, this, _1, _2));
 		}
 	
 		return true;
@@ -39,14 +39,14 @@ namespace raesp::comps
 
 	void RadioCommander::onMqttConnected()
 	{
-		if (auto mqtt_sp = mqtt_wp.lock())
-			mqtt_sp->subscribe(rfTopicPrefix + "#");
+		if (auto mqttConnSp = mqttConnWp.lock())
+			mqttConnSp->subscribe(rfTopicPrefix + "#");
 	}
 
 	void RadioCommander::sendMqttInfo(const String& info)
 	{
-		if (auto mqtt_sp = mqtt_wp.lock())
-			mqtt_sp->publish("log", info);
+		if (auto mqttConnSp = mqttConnWp.lock())
+			mqttConnSp->publish("log", info);
 	}
 
 	void RadioCommander::onMqttMessage(const String& topic, const String& payload)
@@ -61,9 +61,9 @@ namespace raesp::comps
 			if (commandQueue.size() > 20)
 			{
 				/* If overflow, then blink RED wifi LED. */
-				if (auto wifiLed_sp = wifiLed_wp.lock())
-					if (!wifiLed_sp->isBlinking())
-						wifiLed_sp->setBlinking(100, 5);
+				if (auto wifiLedSp = wifiLedWp.lock())
+					if (!wifiLedSp->isBlinking())
+						wifiLedSp->setBlinking(100, 5);
 
 				/* ... and tell MQTT via log channel about that. */
 				sendMqttInfo("RadioCmd: Queue is full - discarding!");
@@ -112,13 +112,13 @@ namespace raesp::comps
 
 	void RadioCommander::handleRadioCommand(RadioCommand &command)
 	{
-		if (auto radioLed_sp = radioLed_wp.lock())
+		if (auto radioLedSp = radioLedWp.lock())
 		{
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
 			if (command.unit == -1)
-				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address);
+				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address);
 			else
-				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLed_sp->getPin()}, command.enable, command.address, command.unit);
+				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address, command.unit);
 		}
 
 		command.repeats--;

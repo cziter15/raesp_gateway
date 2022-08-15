@@ -14,12 +14,12 @@ namespace raesp
 		protected:
 			ArduinoOTAClass ArduinoOTA;
 
-			std::weak_ptr<ksf::comps::ksLed> wifiLed_wp;
+			std::weak_ptr<ksf::comps::ksLed> wifiLedWp;
 
-			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;
-			std::weak_ptr<comps::RadioCommander> radioCommander_wp;
+			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;
+			std::weak_ptr<comps::RadioCommander> radioCommanderWp;
 
-			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandle_sp, disEventHandle_sp;
+			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandleSp, disEventHandleSp;
 
 			void onMqttMessage(const String& topic, const String& payload);
 			void onMqttConnected();

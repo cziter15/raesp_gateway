@@ -14,14 +14,14 @@ namespace raesp
 		addComponent<ksf::comps::ksMqttDebugResponder>();
 
 		/* Create mqttConnector component. */
-		mqtt_wp = addComponent<ksf::comps::ksMqttConnector>();
+		mqttConnWp = addComponent<ksf::comps::ksMqttConnector>();
 
 		/* Create LED components. */
-		wifiLed_wp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
-		auto radioLed_wp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
+		wifiLedWp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
+		auto radioLedWp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
 
 		/* Create RadioCommander component. */
-		radioCommander_wp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLed_wp, radioLed_wp);
+		radioCommanderWp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLedWp, radioLedWp);
 
 		/* Try to initialize superclass. It will initialize our components and tcpip (due to WiFi component). */
 		if (!ksApplication::init())
@@ -33,19 +33,19 @@ namespace raesp
 		ArduinoOTA.begin();
 		
 		/* Bind to MQTT callbacks. */
-		if (auto mqtt_sp = mqtt_wp.lock())
+		if (auto mqttConnSp = mqttConnWp.lock())
 		{
-			mqtt_sp->onConnected->registerEvent(connEventHandle_sp, std::bind(&RaespDevice::onMqttConnected, this));
-			mqtt_sp->onDisconnected->registerEvent(disEventHandle_sp, std::bind(&RaespDevice::onMqttDisconnected, this));
+			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RaespDevice::onMqttConnected, this));
+			mqttConnSp->onDisconnected->registerEvent(disEventHandleSp, std::bind(&RaespDevice::onMqttDisconnected, this));
 		}
 
 		/* Start LED blinking on finished init. */
-		if (auto statusLed_sp = wifiLed_wp.lock())
+		if (auto statusLed_sp = wifiLedWp.lock())
 			statusLed_sp->setBlinking(500);
 
 		/* We want to stop RF before flash start. */
 		ArduinoOTA.onStart([&]() {
-			if (auto RadioFrontend = radioCommander_wp.lock())
+			if (auto RadioFrontend = radioCommanderWp.lock())
 				RadioFrontend->forceStandby();
 		});
 
@@ -55,14 +55,14 @@ namespace raesp
 
 	void RaespDevice::onMqttDisconnected()
 	{
-		if (auto statusLed_sp = wifiLed_wp.lock())
-			statusLed_sp->setBlinking(500);
+		if (auto wifiLedSp = wifiLedWp.lock())
+			wifiLedSp->setBlinking(500);
 	}
 
 	void RaespDevice::onMqttConnected()
 	{
-		if (auto statusLed_sp = wifiLed_wp.lock())
-			statusLed_sp->setBlinking(0);
+		if (auto wifiLedSp = wifiLedWp.lock())
+			wifiLedSp->setBlinking(0);
 	}
 
 	bool RaespDevice::loop()

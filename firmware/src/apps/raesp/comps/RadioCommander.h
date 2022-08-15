@@ -23,10 +23,10 @@ namespace raesp::comps
 			std::shared_ptr<Module> radioPhy;													//< Radio Phy module ptr.
 			std::shared_ptr<SX1278> radioModule;												//< Radio Module ptr.
 
-			std::weak_ptr<ksf::comps::ksMqttConnector> mqtt_wp;									//< Weak pointer to mqtt connector.
-			std::weak_ptr<ksf::comps::ksLed> radioLed_wp, wifiLed_wp;							//< Weak pointers to LEDs.
+			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;								//< Weak pointer to mqtt connector.
+			std::weak_ptr<ksf::comps::ksLed> radioLedWp, wifiLedWp;								//< Weak pointers to LEDs.
 
-			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandle_sp, msgEventHandle_sp;		//< Shared ptrs to events.
+			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandleSp, msgEventHandleSp;		//< Shared ptrs to events.
 
 			std::queue<RadioCommand> commandQueue;												//< Radio commadn queue.
 
@@ -39,7 +39,7 @@ namespace raesp::comps
 			void IRAM_ATTR handleRadioCommand(RadioCommand& cmd);
 			
 		public:
-			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin,	ksLedWP wifiLed, ksLedWP radioLed);
+			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin,	ksLedWP wifiLedWp, ksLedWP radioLedWp);
 			bool init(ksf::ksComposable* owner) override;
 			bool loop() override;
 			void forceStandby();
