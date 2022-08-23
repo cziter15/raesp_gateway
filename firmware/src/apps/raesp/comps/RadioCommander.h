@@ -30,11 +30,11 @@ namespace raesp::comps
 
 			std::queue<RadioCommand> commandQueue;												//< Radio commadn queue.
 
-			const String rfTopicPrefix{"rfswitch/"};											//< RF command topic prefix.
+			const std::string rfTopicPrefix{"rfswitch/"};										//< RF command topic prefix.
 
-			void onMqttMessage(const String& topic, const String& payload);
+			void onMqttMessage(const std::string_view& topic, const std::string_view& payload);
 			void onMqttConnected();
-			void sendMqttInfo(const String& info);
+			void sendMqttInfo(const std::string& info);
 
 			void IRAM_ATTR handleRadioCommand(RadioCommand& cmd);
 			

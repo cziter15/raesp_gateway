@@ -43,15 +43,15 @@ namespace raesp::comps
 			mqttConnSp->subscribe(rfTopicPrefix + "#");
 	}
 
-	void RadioCommander::sendMqttInfo(const String& info)
+	void RadioCommander::sendMqttInfo(const std::string& info)
 	{
 		if (auto mqttConnSp = mqttConnWp.lock())
 			mqttConnSp->publish("log", info);
 	}
 
-	void RadioCommander::onMqttMessage(const String& topic, const String& payload)
+	void RadioCommander::onMqttMessage(const std::string_view& topic, const std::string_view& payload)
 	{
-		if (!topic.startsWith(rfTopicPrefix))
+		if (topic.find(rfTopicPrefix) == std::string::npos)
 			return;
 
 		/* Radio commander payload should be one char ('1' or '0') */
@@ -76,19 +76,19 @@ namespace raesp::comps
 				Topics like OOK/1234/16 will be handled by nexa protocol.
 				Topics like OOK/1 will be handled by ningbo protocol.
 			 */
-			auto delim_idx = topic.indexOf('/', rfTopicPrefix.length());
+			auto delim_idx = topic.find('/', rfTopicPrefix.length() + 1);
 
 			uint32_t address{0};
 			int16_t unit{-1};
 			
-			if (delim_idx >= 0)
+			if (delim_idx != std::string::npos)
 			{
-				address = topic.substring(9, delim_idx).toInt();
-				unit = topic.substring(delim_idx + 1).toInt();
+				address = std::stol(std::string(topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())));
+				unit =  std::stol(std::string(topic.substr(delim_idx + 1)));
 			}
 			else
 			{
-				address = topic.substring(rfTopicPrefix.length()).toInt();
+				address = std::stol(std::string(topic.substr(rfTopicPrefix.length())));
 			}
 
 			/* If command queue is empty, enable transmitter and.. */
@@ -140,9 +140,9 @@ namespace raesp::comps
 			{
 				sendMqttInfo(
 					"RadioCmd: Sent! "
-					"[ A: " + String(currentCommand.address) + 
-					" | U: " + String(currentCommand.unit) + 
-					" | V: " + String(currentCommand.enable) + " ]"
+					"[ A: " + std::to_string(currentCommand.address) + 
+					" | U: " + std::to_string(currentCommand.unit) + 
+					" | V: " + std::to_string(currentCommand.enable) + " ]"
 				);
 
 				/* Pop current request (remove) from queue, coz we are done with it. */
