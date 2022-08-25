@@ -17,6 +17,8 @@ namespace raesp::comps
 
 	class RadioCommander : public ksf::ksComponent
 	{
+		KSF_RTTI_DECLARATIONS(RadioCommander, ksf::ksComponent)
+		
 		using ksLedWP = std::weak_ptr<ksf::comps::ksLed>;
 		
 		protected:
