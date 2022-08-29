@@ -1,7 +1,8 @@
 #include "RadioCommander.h"
 #include <RadioLib.h>
-#include "board.h"
+#include <charconv>
 
+#include "board.h"
 #include "../protocols/nexa.h"
 #include "../protocols/ningbo.h"
 
@@ -83,12 +84,19 @@ namespace raesp::comps
 			
 			if (delim_idx != std::string::npos)
 			{
-				address = std::stol(std::string(topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())));
-				unit =  std::stol(std::string(topic.substr(delim_idx + 1)));
+				auto address_sv = topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length());
+				if (std::from_chars(address_sv.data(), address_sv.data() + address_sv.size(), address).ec != std::errc())
+					return;
+
+				auto unit_sv = topic.substr(delim_idx + 1);
+				if (std::from_chars(unit_sv.data(), unit_sv.data() + unit_sv.size(), unit).ec != std::errc())
+					return;
 			}
 			else
 			{
-				address = std::stol(std::string(topic.substr(rfTopicPrefix.length())));
+				auto address_sv = topic.substr(rfTopicPrefix.length());
+				if (std::from_chars(address_sv.data(), address_sv.data() + address_sv.size(), address).ec != std::errc())
+					return;
 			}
 
 			/* If command queue is empty, enable transmitter and.. */
