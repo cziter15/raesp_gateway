@@ -85,17 +85,17 @@ namespace raesp::comps
 			if (delim_idx != std::string::npos)
 			{
 				auto address_sv = topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length());
-				if (std::from_chars(address_sv.data(), address_sv.data() + address_sv.size(), address).ec != std::errc())
+				if (!ksf::from_chars(address_sv, address))
 					return;
 
 				auto unit_sv = topic.substr(delim_idx + 1);
-				if (std::from_chars(unit_sv.data(), unit_sv.data() + unit_sv.size(), unit).ec != std::errc())
+				if (!ksf::from_chars(unit_sv, unit))
 					return;
 			}
 			else
 			{
 				auto address_sv = topic.substr(rfTopicPrefix.length());
-				if (std::from_chars(address_sv.data(), address_sv.data() + address_sv.size(), address).ec != std::errc())
+				if (!ksf::from_chars(address_sv, address))
 					return;
 			}
 
