@@ -3,7 +3,6 @@
 [![Based on ksIotFrameworkLib](https://img.shields.io/badge/based%20on-ksIotFrameworkLib-blueviolet)](https://github.com/cziter15/ksIotFrameworkLib)
 [![Hits-of-Code](https://hitsofcode.com/github/cziter15/raesp_gateway?branch=main)](https://hitsofcode.com/github/cziter15/raesp_gateway/view?branch=main)
 [![Device Firmware](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml/badge.svg)](https://github.com/cziter15/raesp_gateway/actions/workflows/main.yml)
-[![Uptime](https://img.shields.io/uptimerobot/ratio/7/m792213804-f2383aceac2cc3f690b14d63)](https://stats.uptimerobot.com/M2OGni2JND)
 
 **Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
