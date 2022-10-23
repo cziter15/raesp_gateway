@@ -27,7 +27,7 @@ namespace raesp
 			proto_low_for(pins, PULSE_TIME * 10 + (PULSE_TIME >> 1));
 
 			// Send Device Address..
-			for (int8_t i = 25; i >= 0; --i)
+			for (int8_t i{25}; i >= 0; --i)
 				tx_nexa_pair(pins, (uint32_t)(transmitterId & ((uint32_t)1 << i)) != 0);
 
 			// Send 26th bit - group 1/0
@@ -46,11 +46,11 @@ namespace raesp
 			}
 
 			// 4 bits - recipient
-			for (int8_t i = 3; i >= 0; --i)
+			for (int8_t i{3}; i >= 0; --i)
 				tx_nexa_pair(pins, (recipient & (1 << i)) != 0);
 
 			if (level > 0)
-				for (int8_t i = 3; i >= 0; --i)
+				for (int8_t i{3}; i >= 0; --i)
 					tx_nexa_pair(pins, (level & (1 << i)) != 0);
 
 			// stop pulse

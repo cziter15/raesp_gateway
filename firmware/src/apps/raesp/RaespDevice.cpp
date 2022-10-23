@@ -18,7 +18,7 @@ namespace raesp
 
 		/* Create LED components. */
 		wifiLedWp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
-		auto radioLedWp = addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
+		auto radioLedWp{addComponent<ksf::comps::ksLed>(CFG_RADIO_LED)};
 
 		/* Create RadioCommander component. */
 		radioCommanderWp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLedWp, radioLedWp);
@@ -33,19 +33,19 @@ namespace raesp
 		ArduinoOTA.begin();
 		
 		/* Bind to MQTT callbacks. */
-		if (auto mqttConnSp = mqttConnWp.lock())
+		if (auto mqttConnSp{mqttConnWp.lock()})
 		{
 			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RaespDevice::onMqttConnected, this));
 			mqttConnSp->onDisconnected->registerEvent(disEventHandleSp, std::bind(&RaespDevice::onMqttDisconnected, this));
 		}
 
 		/* Start LED blinking on finished init. */
-		if (auto statusLed_sp = wifiLedWp.lock())
+		if (auto statusLed_sp{wifiLedWp.lock()})
 			statusLed_sp->setBlinking(500);
 
 		/* We want to stop RF before flash start. */
 		ArduinoOTA.onStart([&]() {
-			if (auto RadioFrontend = radioCommanderWp.lock())
+			if (auto RadioFrontend{radioCommanderWp.lock()})
 				RadioFrontend->forceStandby();
 		});
 
@@ -55,13 +55,13 @@ namespace raesp
 
 	void RaespDevice::onMqttDisconnected()
 	{
-		if (auto wifiLedSp = wifiLedWp.lock())
+		if (auto wifiLedSp{wifiLedWp.lock()})
 			wifiLedSp->setBlinking(500);
 	}
 
 	void RaespDevice::onMqttConnected()
 	{
-		if (auto wifiLedSp = wifiLedWp.lock())
+		if (auto wifiLedSp{wifiLedWp.lock()})
 			wifiLedSp->setBlinking(0);
 	}
 

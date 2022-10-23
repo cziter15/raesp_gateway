@@ -28,7 +28,7 @@ namespace raesp::comps
 	{
 		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
 
-		if (auto mqttConnSp = mqttConnWp.lock())
+		if (auto mqttConnSp{mqttConnWp.lock()})
 		{
 			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RadioCommander::onMqttConnected, this));
 			mqttConnSp->onMesssage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttMessage, this, _1, _2));
@@ -39,13 +39,13 @@ namespace raesp::comps
 
 	void RadioCommander::onMqttConnected()
 	{
-		if (auto mqttConnSp = mqttConnWp.lock())
+		if (auto mqttConnSp{mqttConnWp.lock()})
 			mqttConnSp->subscribe(rfTopicPrefix + "#");
 	}
 
 	void RadioCommander::sendMqttInfo(const std::string& info)
 	{
-		if (auto mqttConnSp = mqttConnWp.lock())
+		if (auto mqttConnSp{mqttConnWp.lock()})
 			mqttConnSp->publish("log", info);
 	}
 
@@ -76,24 +76,24 @@ namespace raesp::comps
 				Topics like OOK/1234/16 will be handled by nexa protocol.
 				Topics like OOK/1 will be handled by ningbo protocol.
 			 */
-			auto delim_idx = topic.find('/', rfTopicPrefix.length() + 1);
+			auto delim_idx{topic.find('/', rfTopicPrefix.length() + 1)};
 
 			uint32_t address{0};
 			int16_t unit{-1};
 			
 			if (delim_idx != std::string::npos)
 			{
-				auto address_sv = topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length());
+				auto address_sv{topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())};
 				if (!ksf::from_chars(address_sv, address))
 					return;
 
-				auto unit_sv = topic.substr(delim_idx + 1);
+				auto unit_sv{topic.substr(delim_idx + 1)};
 				if (!ksf::from_chars(unit_sv, unit))
 					return;
 			}
 			else
 			{
-				auto address_sv = topic.substr(rfTopicPrefix.length());
+				auto address_sv{topic.substr(rfTopicPrefix.length())};
 				if (!ksf::from_chars(address_sv, address))
 					return;
 			}
@@ -119,7 +119,7 @@ namespace raesp::comps
 
 	void RadioCommander::handleRadioCommand(RadioCommand &command)
 	{
-		if (auto radioLedSp = radioLedWp.lock())
+		if (auto radioLedSp{radioLedWp.lock()})
 		{
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
 			if (command.unit == -1)
@@ -139,7 +139,7 @@ namespace raesp::comps
 				Handle single 'repeat' of OOK message request. 
 				One request per application loop.
 			*/
-			auto& currentCommand = commandQueue.front();
+			auto& currentCommand{commandQueue.front()};
 			handleRadioCommand(currentCommand);
 			
 			/* Check if it's last repeat. */

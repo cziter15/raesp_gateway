@@ -13,7 +13,7 @@ namespace raesp
 	{
 		void tx_ningbo_bit(const proto_pins& pins, const char bitChar)
 		{
-			bool isHigh = bitChar == '1';
+			bool isHigh{bitChar == '1'};
 			if (bitChar == '0' || isHigh)
 			{
 				proto_high_for(pins,PULSE_SHORT_A);
@@ -24,10 +24,9 @@ namespace raesp
 			}
 			else
 			{
-				bool isHigh = bitChar == 'H';
 				if (bitChar == 'L' || isHigh)
 				{
-					for (int8_t i = 0; i < 2; i++)
+					for (int8_t i{0}; i < 2; i++)
 					{
 						proto_high_for(pins, isHigh ? PULSE_LONG_A : PULSE_SHORT_A);
 						proto_low_for(pins, isHigh ? PULSE_SHORT_B : PULSE_LONG_B);
@@ -52,7 +51,7 @@ namespace raesp
 
 			tx_ningbo_bitarrray(pins, "1000");
 
-			for (int8_t b = 0; b < 7; ++b)
+			for (int8_t b{0}; b < 7; ++b)
 				tx_ningbo_bit(pins, ((uint32_t)(switchId & ((uint32_t)1 << b)) != 0) ? '1' : '0');
 
 			tx_ningbo_bit(pins, blnOn ? 'H' : 'L');
