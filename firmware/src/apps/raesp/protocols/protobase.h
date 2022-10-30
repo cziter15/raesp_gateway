@@ -1,17 +1,24 @@
+/*
+ *	Copyright (c) 2021-2023, Krzysztof Strehlau
+ *
+ *	This file is part of the ksIotFramework library.
+ *	All licensing information can be found inside LICENSE.md file.
+ *
+ *	https://github.com/cziter15/raesp_gateway/blob/main/firmware/LICENSE
+ */
+
 #pragma once
+
 #include <inttypes.h>
 
-namespace raesp
+namespace apps::raesp::protocols
 {
-	namespace protocols
+	struct proto_pins
 	{
-		struct proto_pins
-		{
-			uint8_t tx;
-			uint8_t led;
-		};
+		uint8_t tx;
+		uint8_t led;
+	};
 
-		extern void proto_high_for(const proto_pins& pins, uint32_t us);
-		extern void proto_low_for(const proto_pins& pins, uint32_t us);
-	}
+	extern void proto_high_for(const proto_pins& pins, uint32_t us);
+	extern void proto_low_for(const proto_pins& pins, uint32_t us);
 }
