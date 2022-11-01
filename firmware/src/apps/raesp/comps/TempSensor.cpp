@@ -51,7 +51,11 @@ namespace apps::raesp::comps
 
 		/* Create DS18 handler. */
 		if (!ds18handler)
+		{
 			ds18handler = std::make_shared<DS18B20>(dataPin);
+			if (ds18handler) 
+				ds18handler->setResolution(10);
+		}
 
 		/* Handle temperature measurement. */
 		if (ds18handler && ds18handler->getNumberOfDevices() > 0)
