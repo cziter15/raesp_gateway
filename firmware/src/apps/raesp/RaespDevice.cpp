@@ -12,6 +12,10 @@
 #include "../config/RaespDeviceConfig.h"
 #include "comps/RadioCommander.h"
 
+#if USING_TEMP_SENSOR
+	#include "comps/TempSensor.h"
+#endif
+
 using namespace std::placeholders;
 
 namespace apps::raesp
@@ -28,6 +32,11 @@ namespace apps::raesp
 		/* Create LED components. */
 		wifiLedWp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
 		auto radioLedWp{addComponent<ksf::comps::ksLed>(CFG_RADIO_LED)};
+
+		/* Create Temperature sensing component. */
+		#if USING_TEMP_SENSOR
+			addComponent<comps::TempSensor>(CFG_WIFI_LED, CFG_RADIO_LED, TEMP_UPDATE_INTERVAL_MS);
+		#endif
 
 		/* Create RadioCommander component. */
 		radioCommanderWp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLedWp, radioLedWp);
