@@ -20,21 +20,25 @@ namespace apps::raesp::comps
 
 	bool TempSensor::init(ksf::ksComposable* owner)
 	{
-		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
 		this->owner = owner;
+		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
 		return true;
 	}
 
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
-		/* Well this is a bit tricky. Because we are sharing pins with LEDs, we need to store Direction and LO/HI state.*/
+		/* 
+			Well this is a bit tricky. Because we are sharing pins with LEDs, we need to cache Direction and LO/HI state.
+			Then, when we are done, we should restore pin state and modes so it will look it didn't happen from other components.
+		*/
 		auto cachedEnabGPC{GPC(enabPin)};	// enabPin ctrl registry.
 		auto cachedDataGPC{GPC(dataPin)};	// dataPin ctrl registry.
 		auto cachedEnabGPF{GPF(enabPin)};	// enabPin func registry.
 		auto cachedDataGPF{GPF(dataPin)};	// dataPin func registry.
 		auto cachedGPEC{GPEC};				// GPEC registry.
 
-		int cachedEnabState{LOW};
+		/* Cache data pin state. */
+		auto cachedEnabState{LOW};
 		auto cachedDataState{digitalRead(dataPin)};
 
 		/* Enable power for the sensor. */
@@ -49,22 +53,21 @@ namespace apps::raesp::comps
 		if (!ds18handler)
 			ds18handler = std::make_shared<DS18B20>(dataPin);
 
-		if (ds18handler)
-		{
-			if (ds18handler->getNumberOfDevices() > 0)
-				mqttConnSp->publish("room_temp", ksf::to_string(ds18handler->getTempC(), 2));
-			else
-				owner->queueRemoveComponent(shared_from_this());
-		}
+		/* Handle temperature measurement. */
+		if (ds18handler && ds18handler->getNumberOfDevices() > 0)
+			mqttConnSp->publish("room_temp", ksf::to_string(ds18handler->getTempC(), 2));
+		else
+			owner->queueRemoveComponent(shared_from_this());
 
 		/* Disable power for the sensor. */
 		if (enabPin != std::numeric_limits<uint8_t>().max())
 			digitalWrite(enabPin, cachedEnabState);
 
+		/* Restore data pin state. */
 		pinMode(dataPin, OUTPUT);
 		digitalWrite(dataPin, cachedDataState);
 
-		/* Restore saved pin state. */
+		/* Restore saved pin configuration (pin mode). */
 		GPC(dataPin) = cachedDataGPC;	// dataPin ctrl registry.
 		GPC(enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
 		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
