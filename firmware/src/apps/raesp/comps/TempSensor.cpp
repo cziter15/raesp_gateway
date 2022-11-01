@@ -54,7 +54,7 @@ namespace apps::raesp::comps
 		{
 			ds18handler = std::make_shared<DS18B20>(dataPin);
 			if (ds18handler) 
-				ds18handler->setResolution(10);
+				ds18handler->setResolution(11);
 		}
 
 		/* Handle temperature measurement. */
