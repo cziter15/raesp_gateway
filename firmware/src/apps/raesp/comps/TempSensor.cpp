@@ -9,11 +9,13 @@
 
 #include "TempSensor.h"
 #include <DS18B20.h>
-#define TEMP_SENSOR_INVALID_TEMP 85.0f
+
 using namespace std::placeholders;
 
 namespace apps::raesp::comps
 {
+	#define TEMP_SENSOR_INVALID_TEMP 85.0f
+
 	TempSensor::TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t updateInterval, uint8_t resolution)
 		: measurementTimer(updateInterval), dataPin(dataPin), enabPin(enabPin), resolution(resolution)
 	{}
@@ -62,7 +64,7 @@ namespace apps::raesp::comps
 		{
 			auto tempC{ds18handler->getTempC()};
 			if (fabsf(TEMP_SENSOR_INVALID_TEMP - tempC) > std::numeric_limits<float>::epsilon())
-				mqttConnSp->publish("room_temp", ksf::to_string(ds18handler->getTempC(), 2));
+				mqttConnSp->publish("room_temp", ksf::to_string(tempC, 2));
 		}
 		else
 		{
