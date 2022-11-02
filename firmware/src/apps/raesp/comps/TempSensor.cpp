@@ -14,8 +14,8 @@ using namespace std::placeholders;
 
 namespace apps::raesp::comps
 {
-	TempSensor::TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t updateInterval)
-		: measurementTimer(updateInterval), dataPin(dataPin), enabPin(enabPin)
+	TempSensor::TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t updateInterval, uint8_t resolution)
+		: measurementTimer(updateInterval), dataPin(dataPin), enabPin(enabPin), resolution(resolution)
 	{}
 
 	bool TempSensor::init(ksf::ksComposable* owner)
@@ -53,8 +53,8 @@ namespace apps::raesp::comps
 		if (!ds18handler)
 		{
 			ds18handler = std::make_shared<DS18B20>(dataPin);
-			if (ds18handler) 
-				ds18handler->setResolution(11);
+			if (ds18handler && resolution > 0) 
+				ds18handler->setResolution(resolution);
 		}
 
 		/* Handle temperature measurement. */

@@ -27,7 +27,8 @@ namespace apps::raesp::comps
 
 			uint8_t dataPin{std::numeric_limits<uint8_t>().max()};			//< Temp sensor data pin.
 			uint8_t enabPin{std::numeric_limits<uint8_t>().max()};			//< Temp sensor emable pin.
-			
+			uint8_t resolution{0};											//< Requested resolution.
+
 			ksf::ksComposable* owner{nullptr};								//< Parent composable (app) pointer.
 
 			void onMqttConnected();
@@ -35,7 +36,7 @@ namespace apps::raesp::comps
 			void measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp);
 
 		public:
-			TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t tempUpdateInterval);
+			TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t tempUpdateInterval, uint8_t resolution);
 			bool init(ksf::ksComposable* owner) override;
 			bool loop() override;
 	};
