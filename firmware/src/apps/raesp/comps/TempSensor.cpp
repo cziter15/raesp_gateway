@@ -9,7 +9,7 @@
 
 #include "TempSensor.h"
 #include <DS18B20.h>
-
+#define TEMP_SENSOR_INVALID_TEMP 85.0f
 using namespace std::placeholders;
 
 namespace apps::raesp::comps
@@ -59,9 +59,16 @@ namespace apps::raesp::comps
 
 		/* Handle temperature measurement. */
 		if (ds18handler && ds18handler->getNumberOfDevices() > 0)
-			mqttConnSp->publish("room_temp", ksf::to_string(ds18handler->getTempC(), 2));
+		{
+			auto tempC{ds18handler->getTempC()};
+			if (fabsf(TEMP_SENSOR_INVALID_TEMP - tempC) > std::numeric_limits<float>::epsilon())
+				mqttConnSp->publish("room_temp", ksf::to_string(ds18handler->getTempC(), 2));
+		}
 		else
+		{
+			/* Queue ourselves for removal. */
 			owner->queueRemoveComponent(shared_from_this());
+		}
 
 		/* Disable power for the sensor. */
 		if (enabPin != std::numeric_limits<uint8_t>().max())
