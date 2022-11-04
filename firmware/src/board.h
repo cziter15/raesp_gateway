@@ -26,6 +26,6 @@
 	#define TEMP_ENAB_PIN CFG_RADIO_LED
 	/* Resolution for measurement. Higher resulution means bigger delay. */
 	#define TEMP_SENSOR_RESOLUTION 11
-	/* Update interval. Currently three minutes (180000).. */
-	#define TEMP_UPDATE_INTERVAL_MS 180000UL
+	/* Update interval. Currently five minutes (300000 ms). */
+	#define TEMP_UPDATE_INTERVAL_MS 300000UL
 #endif
