@@ -20,8 +20,12 @@
 #define TRANSMIT_FREQ 433.928
 
 #ifdef USING_TEMP_SENSOR
+	/* Share temp sensor pins with other functions. */
 	#define TEMP_DATA_PIN CFG_WIFI_LED
+	/* Share temp sensor pins with other functions. */
 	#define TEMP_ENAB_PIN CFG_RADIO_LED
-	#define TEMP_UPDATE_INTERVAL_MS 300000UL
+	/* Resolution for measurement. Higher resulution means bigger delay. */
 	#define TEMP_SENSOR_RESOLUTION 11
+	/* Update interval. Currently three minutes (180000).. */
+	#define TEMP_UPDATE_INTERVAL_MS 180000UL
 #endif
