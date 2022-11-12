@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <inttypes.h>
 #include "protobase.h"
 
 namespace apps::raesp::protocols

@@ -46,7 +46,7 @@ namespace apps::raesp::comps
 
 			void onMqttMessage(const std::string_view& topic, const std::string_view& payload);
 			void onMqttConnected();
-			void sendMqttInfo(const std::string& info);
+			void sendMqttInfo(const std::string& info) const;
 
 			void IRAM_ATTR handleRadioCommand(RadioCommand& cmd);
 			

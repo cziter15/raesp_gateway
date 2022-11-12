@@ -7,8 +7,8 @@
  *	https://github.com/cziter15/raesp_gateway/blob/main/firmware/LICENSE
  */
 
-#include "ningbo.h"
 #include "Arduino.h"
+#include "ningbo.h"
 
 #define PULSE_SHORT_A 280
 #define PULSE_SHORT_B 360

@@ -7,8 +7,8 @@
  *	https://github.com/cziter15/raesp_gateway/blob/main/firmware/LICENSE
  */
 
-#include "nexa.h"
 #include "Arduino.h"
+#include "nexa.h"
 
 #define PULSE_TIME	296
 

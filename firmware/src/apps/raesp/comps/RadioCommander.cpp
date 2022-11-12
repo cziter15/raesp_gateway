@@ -52,7 +52,7 @@ namespace apps::raesp::comps
 			mqttConnSp->subscribe(rfTopicPrefix + "#");
 	}
 
-	void RadioCommander::sendMqttInfo(const std::string& info)
+	void RadioCommander::sendMqttInfo(const std::string& info) const
 	{
 		if (auto mqttConnSp{mqttConnWp.lock()})
 			mqttConnSp->publish("log", info);
