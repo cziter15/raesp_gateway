@@ -10,6 +10,7 @@
 #pragma once
 
 #include <ksIotFrameworkLib.h>
+#include <optional>
 
 class DS18B20;
 
@@ -25,9 +26,9 @@ namespace apps::raesp::comps
 
 			ksf::ksSimpleTimer measurementTimer;
 
-			uint8_t dataPin{std::numeric_limits<uint8_t>().max()};			//< Temp sensor data pin.
-			uint8_t enabPin{std::numeric_limits<uint8_t>().max()};			//< Temp sensor emable pin.
-			uint8_t resolution{0};											//< Requested resolution.
+			uint8_t dataPin{0};												//< Temp sensor data pin.
+			std::optional<uint8_t> enabPin;									//< Temp sensor emable pin.
+			std::optional<uint8_t> resolution;								//< Requested resolution.
 
 			ksf::ksComposable* owner{nullptr};								//< Parent composable (app) pointer.
 
@@ -36,7 +37,13 @@ namespace apps::raesp::comps
 			void measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp);
 
 		public:
-			TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t tempUpdateInterval, uint8_t resolution);
+			TempSensor(
+				uint8_t dataPin, 
+				uint32_t tempUpdateInterval = 300000UL, 
+				std::optional<uint8_t> resolution = std::nullopt, 
+				std::optional<uint8_t> enabPin = std::nullopt
+			);
+
 			bool init(ksf::ksComposable* owner) override;
 			bool loop() override;
 	};

@@ -35,7 +35,7 @@ namespace apps::raesp
 
 		/* Create Temperature sensing component. */
 		#if USING_TEMP_SENSOR
-			addComponent<comps::TempSensor>(TEMP_DATA_PIN, TEMP_ENAB_PIN, TEMP_UPDATE_INTERVAL_MS, TEMP_SENSOR_RESOLUTION);
+			addComponent<comps::TempSensor>(TEMP_DATA_PIN, TEMP_UPDATE_INTERVAL_MS, TEMP_SENSOR_RESOLUTION, TEMP_ENAB_PIN);
 		#endif
 
 		/* Create RadioCommander component. */

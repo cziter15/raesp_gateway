@@ -16,8 +16,8 @@ namespace apps::raesp::comps
 {
 	#define TEMP_SENSOR_INVALID_TEMP 85.0f
 
-	TempSensor::TempSensor(uint8_t dataPin, uint8_t enabPin, uint32_t updateInterval, uint8_t resolution)
-		: measurementTimer(updateInterval), dataPin(dataPin), enabPin(enabPin), resolution(resolution)
+	TempSensor::TempSensor(uint8_t dataPin, uint32_t tempUpdateInterval, std::optional<uint8_t> resolution, std::optional<uint8_t> enabPin)
+		: measurementTimer(tempUpdateInterval), dataPin(dataPin), enabPin(enabPin), resolution(resolution)
 	{}
 
 	bool TempSensor::init(ksf::ksComposable* owner)
@@ -33,10 +33,12 @@ namespace apps::raesp::comps
 			Well this is a bit tricky. Because we are sharing pins with LEDs, we need to cache Direction and LO/HI state.
 			Then, when we are done, we should restore pin state and modes so it will look it didn't happen from other components.
 		*/
-		auto cachedEnabGPC{GPC(enabPin)};	// enabPin ctrl registry.
+		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
+		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
+
 		auto cachedDataGPC{GPC(dataPin)};	// dataPin ctrl registry.
-		auto cachedEnabGPF{GPF(enabPin)};	// enabPin func registry.
 		auto cachedDataGPF{GPF(dataPin)};	// dataPin func registry.
+
 		auto cachedGPEC{GPEC};				// GPEC registry.
 
 		/* Cache data pin state. */
@@ -44,19 +46,19 @@ namespace apps::raesp::comps
 		auto cachedDataState{digitalRead(dataPin)};
 
 		/* Enable power for the sensor. */
-		if (enabPin != std::numeric_limits<uint8_t>().max())
+		if (enabPin.has_value())
 		{
-			cachedEnabState = digitalRead(enabPin);
-			pinMode(enabPin, OUTPUT);
-			digitalWrite(enabPin, HIGH);
+			cachedEnabState = digitalRead(*enabPin);
+			pinMode(*enabPin, OUTPUT);
+			digitalWrite(*enabPin, HIGH);
 		}
 
 		/* Create DS18 handler. */
 		if (!ds18handler)
 		{
 			ds18handler = std::make_shared<DS18B20>(dataPin);
-			if (ds18handler && resolution > 0) 
-				ds18handler->setResolution(resolution);
+			if (ds18handler && resolution.has_value()) 
+				ds18handler->setResolution(*resolution);
 		}
 
 		/* Handle temperature measurement. */
@@ -73,18 +75,23 @@ namespace apps::raesp::comps
 		}
 
 		/* Disable power for the sensor. */
-		if (enabPin != std::numeric_limits<uint8_t>().max())
-			digitalWrite(enabPin, cachedEnabState);
+		if (enabPin.has_value())
+			digitalWrite(*enabPin, cachedEnabState);
 
 		/* Restore data pin state. */
 		pinMode(dataPin, OUTPUT);
 		digitalWrite(dataPin, cachedDataState);
 
 		/* Restore saved pin configuration (pin mode). */
+		if (enabPin.has_value())
+		{
+			GPC(*enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
+			GPF(*enabPin) = cachedEnabGPF;	// enabPin func registry.
+		}
+
 		GPC(dataPin) = cachedDataGPC;	// dataPin ctrl registry.
-		GPC(enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
 		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
-		GPF(enabPin) = cachedEnabGPF;	// enabPin func registry.
+
 		GPEC = cachedGPEC;				// GPEC registry.
 	}
 
