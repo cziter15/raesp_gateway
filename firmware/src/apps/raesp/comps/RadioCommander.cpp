@@ -1,7 +1,7 @@
 /*
  *	Copyright (c) 2021-2023, Krzysztof Strehlau
  *
- *	This file is part of the ksIotFramework library.
+ *	This file is part of the RaespDevice (WiFi 433 MHz bridge) firmware.
  *	All licensing information can be found inside LICENSE.md file.
  *
  *	https://github.com/cziter15/raesp_gateway/blob/main/firmware/LICENSE
@@ -67,7 +67,7 @@ namespace apps::raesp::comps
 		if (payload.length() == 1)
 		{
 			/* Check command queue overflow. */
-			if (commandQueue.size() > 20)
+			if (commandQueue.size() > MAX_TX_QUEUE_SIZE)
 			{
 				/* If overflow, then blink RED wifi LED. */
 				if (auto wifiLedSp = wifiLedWp.lock())
@@ -80,7 +80,7 @@ namespace apps::raesp::comps
 			}
 
 			/*	
-				Try split topic.
+				Try split topic. Based of delimeter presence specific protocol is selected.
 
 				Topics like OOK/1234/16 will be handled by nexa protocol.
 				Topics like OOK/1 will be handled by ningbo protocol.
@@ -88,7 +88,7 @@ namespace apps::raesp::comps
 			auto delim_idx{topic.find('/', rfTopicPrefix.length() + 1)};
 
 			uint32_t address{0};
-			int16_t unit{-1};
+			int16_t unit{RC_UNIT_NONE};
 			
 			if (delim_idx != std::string::npos)
 			{
@@ -107,7 +107,11 @@ namespace apps::raesp::comps
 					return;
 			}
 
-			/* If command queue is empty, enable transmitter and.. */
+			/* 
+				If command queue is empty, we are in standby mode.
+				We should set radio module to transmit mode and queue new request to send over air.
+				Otherwise, we should have already transmit mode selected, so only queue in that case.
+			*/
 			if (commandQueue.empty())
 				radioModule->transmitDirect();
 
@@ -126,12 +130,12 @@ namespace apps::raesp::comps
 			radioModule->standby();
 	}
 
-	void RadioCommander::handleRadioCommand(RadioCommand &command)
+	void RadioCommander::processRadioCommand(RadioCommand &command)
 	{
 		if (auto radioLedSp{radioLedWp.lock()})
 		{
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
-			if (command.unit == -1)
+			if (command.unit == RC_UNIT_NONE)
 				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address);
 			else
 				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address, command.unit);
@@ -149,7 +153,7 @@ namespace apps::raesp::comps
 				One request per application loop.
 			*/
 			auto& currentCommand{commandQueue.front()};
-			handleRadioCommand(currentCommand);
+			processRadioCommand(currentCommand);
 			
 			/* Check if it's last repeat. */
 			if (currentCommand.repeats <= 0)
