@@ -33,7 +33,7 @@ namespace apps::raesp::comps
 
 		protected:
 
-			static constexpr uin16_t MAX_TX_QUEUE_SIZE{20};										// Maximum queue size for RC requests.
+			static constexpr uint16_t MAX_TX_QUEUE_SIZE{20};									// Maximum queue size for RC requests.
 			static constexpr int16_t RC_UNIT_NONE{-1};											// Value indicating no unit presence.
 
 			std::shared_ptr<Module> radioPhy;													// Radio Phy module ptr.
