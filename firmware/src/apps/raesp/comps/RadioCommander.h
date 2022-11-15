@@ -46,16 +46,64 @@ namespace apps::raesp::comps
 			const std::string rfTopicPrefix{"rfswitch/"};										// RF command topic prefix.
 			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandleSp, msgEventHandleSp;		// Shared ptrs to events.
 
+			/*
+				Event handler method called when MQTT service receives a message.
+
+				@param topic Reference of topic string_view.
+				@param message Reference of message string_view.
+			*/
 			void onMqttMessage(const std::string_view& topic, const std::string_view& payload);
+
+			/*
+				Event handler method called when MQTT service connected to server. 
+			*/
 			void onMqttConnected();
+
+			/*
+				Wrapper function for publishin device log to specific MQTT topic.
+
+				@param info Message to publish.
+			*/
 			void sendMqttInfo(const std::string& info) const;
 
+			/*
+				This funciton will handle one repeat of RadioCommand and will block to drive data pin.
+
+				@param cmd Reference to radio command.
+			*/
 			void IRAM_ATTR processRadioCommand(RadioCommand& cmd);
 			
 		public:
+			/*
+				Constructs RadioCommander.
+
+				@param ssPin Radio Module SS pin number.
+				@param dio0pin Radio Module DIO0 pin number.
+				@param rstPin Radio Module reset pin number.
+				@param dio2pin Radio Module DIO2 pin number.
+				@param wifiLedWp Wifi LED component weak pointer.
+				@param radioLedWp Radio LED component weak pointer.
+			*/
 			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin,	ksLedWP wifiLedWp, ksLedWP radioLedWp);
+
+			/*
+				Initializes RadioCommander component.
+
+				@param owner Pointer to owning composable interface (application).
+				@return True on success, false on fail.
+			*/
 			bool init(ksf::ksComposable* owner) override;
+
+			/* 
+				Handles RadioCommander logic.
+
+				@return True on success, false on fail.
+			*/
 			bool loop() override;
+
+			/* 
+				Forces standby state on Radio Module. Will clear radio command queue.
+			*/
 			void forceStandby();
 	};
 }

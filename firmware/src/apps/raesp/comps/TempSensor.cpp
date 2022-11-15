@@ -17,7 +17,7 @@ namespace apps::raesp::comps
 	#define TEMP_SENSOR_INVALID_TEMP 85.0f
 
 	TempSensor::TempSensor(uint8_t dataPin, uint32_t tempUpdateInterval, std::optional<uint8_t> resolution, std::optional<uint8_t> enabPin)
-		: measurementTimer(tempUpdateInterval), dataPin(dataPin), enabPin(enabPin), resolution(resolution)
+		: dataPin(dataPin), enabPin(enabPin), resolution(resolution), measurementTimer(tempUpdateInterval)
 	{}
 
 	bool TempSensor::init(ksf::ksComposable* owner)

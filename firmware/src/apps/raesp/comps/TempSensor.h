@@ -21,22 +21,46 @@ namespace apps::raesp::comps
 		KSF_RTTI_DECLARATIONS(TempSensor, ksf::ksComponent)
 		
 		protected:
-			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;			//< Weak pointer to mqtt connector.
-			std::shared_ptr<DS18B20> ds18handler;							//< Temp sensor handle ptr.
+			ksf::ksComposable* owner{nullptr};								// Parent composable (app) pointer.
 
-			ksf::ksSimpleTimer measurementTimer;
+			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;			// Weak pointer to mqtt connector.
+			std::shared_ptr<DS18B20> ds18handler;							// Temp sensor handle ptr.
 
-			uint8_t dataPin{0};												//< Temp sensor data pin.
-			std::optional<uint8_t> enabPin;									//< Temp sensor emable pin.
-			std::optional<uint8_t> resolution;								//< Requested resolution.
+			uint8_t dataPin{0};												// Temp sensor data pin.
+			std::optional<uint8_t> enabPin;									// Temp sensor emable pin.
+			std::optional<uint8_t> resolution;								// Requested resolution.
 
-			ksf::ksComposable* owner{nullptr};								//< Parent composable (app) pointer.
+			ksf::ksSimpleTimer measurementTimer;							// Measurement timer (to measure temp at specified interval).
 
+			/*
+				Event handler method called when MQTT service connected to server. 
+			*/
 			void onMqttConnected();
+
+			/*
+				Event handler method called when MQTT service receives a message.
+
+				@param topic Reference of topic string_view.
+				@param message Reference of message string_view.
+			*/
 			void onMqttMessage(const std::string_view& topic, const std::string_view& payload);
+
+			/*
+				Retrieves data from temperature sensor (blocking).
+
+				@param mqttConnSp Reference to shared pointer of MQTT component.
+			*/
 			void measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp);
 
 		public:
+			/*
+				Constructs TempSensor.
+
+				@param dataPin OneWire data pin number.
+				@param tempUpdateInterval Interval of measurements.
+				@param resolution Optional resolution.
+				@param enabPin Optional enabPin number.
+			*/
 			TempSensor(
 				uint8_t dataPin, 
 				uint32_t tempUpdateInterval = 300000UL, 
@@ -44,7 +68,19 @@ namespace apps::raesp::comps
 				std::optional<uint8_t> enabPin = std::nullopt
 			);
 
+			/*
+				Initializes TempSensor component.
+
+				@param owner Pointer to owning composable interface (application).
+				@return True on success, false on fail.
+			*/
 			bool init(ksf::ksComposable* owner) override;
+
+			/* 
+				Handles TempSensor logic.
+
+				@return True on success, false on fail.
+			*/
 			bool loop() override;
 	};
 }

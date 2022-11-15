@@ -15,8 +15,8 @@ namespace apps::raesp::protocols
 {
 	struct proto_pins
 	{
-		uint8_t tx;
-		uint8_t led;
+		uint8_t tx;		// TX pin number.
+		uint8_t led;	// LED pin number.
 	};
 
 	extern void proto_high_for(const proto_pins& pins, uint32_t us);
