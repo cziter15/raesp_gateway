@@ -71,7 +71,7 @@ namespace apps::raesp::comps
 		else
 		{
 			/* Queue ourselves for removal. */
-			owner->queueRemoveComponent(shared_from_this());
+			owner->queueComponentForRemoval(shared_from_this());
 		}
 
 		/* Disable power for the sensor. */
