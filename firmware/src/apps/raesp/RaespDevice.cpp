@@ -30,7 +30,7 @@ namespace apps::raesp
 		mqttConnWp = addComponent<ksf::comps::ksMqttConnector>();
 
 		/* Create LED components. */
-		wifiLedWp = addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
+		wifiLedWp = addComponent<ksf::comps::ksLed>(CFG_STATUS_LED);
 		auto radioLedWp{addComponent<ksf::comps::ksLed>(CFG_RADIO_LED)};
 
 		/* Create Temperature sensing component. */

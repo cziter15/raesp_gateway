@@ -10,7 +10,7 @@ This directory contains example firmware for RaEsp gateway device. At this momen
 
 ## Compoonents
 - RadioCommander - provides Radio Command interface, this component handles message commands coming from MQTT and then handles them by sending apropriate RF messages to remote controlled power outlets.
-- TempSensor - optional temperature sensor support (DS18B20) that can be connected to flash/debug header on PCB. Uses RX pin [CFG_RADIO_LED/GPIO1] as power supply and BT [CFG_WIFI_LED/GPIO0] as communication pin.
+- TempSensor - optional temperature sensor support (DS18B20) that can be connected to flash/debug header on PCB. Uses RX pin [CFG_RADIO_LED/GPIO1] as power supply and BT [CFG_STATUS_LED/GPIO0] as communication pin.
 
 ## Protocols
 - Nexa - Nexa RF OOK protocol implementation.

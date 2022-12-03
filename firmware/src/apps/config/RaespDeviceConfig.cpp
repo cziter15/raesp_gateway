@@ -19,7 +19,7 @@ namespace apps::config
 		addComponent<ksf::comps::ksWiFiConfigurator>(RaespDeviceName);
 		addComponent<ksf::comps::ksMqttConfigProvider>();
 
-		addComponent<ksf::comps::ksLed>(CFG_WIFI_LED);
+		addComponent<ksf::comps::ksLed>(CFG_STATUS_LED);
 		addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
 
 		return ksApplication::init();

@@ -9,8 +9,8 @@
 
 #pragma once
 
-/* Pin number used to drive WiFi state indicator (LED). */
-#define CFG_WIFI_LED 0
+/* Pin number used to drive MQTT connection status indicator (LED). */
+#define CFG_STATUS_LED 0
 /* Pin number used to drive radio activity indicator (LED). */
 #define CFG_RADIO_LED 1
 /* Pin number used to drive NSS pad of theradio module interface. */
@@ -29,7 +29,7 @@
 
 #ifdef USING_TEMP_SENSOR
 	/* Share temp sensor pins with other functions. */
-	#define TEMP_DATA_PIN CFG_WIFI_LED
+	#define TEMP_DATA_PIN CFG_STATUS_LED
 	/* Share temp sensor pins with other functions. */
 	#define TEMP_ENAB_PIN CFG_RADIO_LED
 	/* Resolution for measurement. Higher resulution means bigger delay. */
