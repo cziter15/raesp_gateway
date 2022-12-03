@@ -19,6 +19,19 @@ namespace apps::raesp::protocols
 		uint8_t led;	// LED pin number.
 	};
 
+	/*
+		Sets HIGH state on LED and TX pin and blocks for passed microseconds.
+
+		@param pins Pin structure reference (containing pin numbers).
+		@param us Number of microseconds to wait.
+	*/
 	extern void proto_high_for(const proto_pins& pins, uint32_t us);
+	
+	/*
+		Sets LOW state on LED and TX pin and blocks for passed microseconds.
+
+		@param pins Pin structure reference (containing pin numbers).
+		@param us Number of microseconds to wait.
+	*/	
 	extern void proto_low_for(const proto_pins& pins, uint32_t us);
 }

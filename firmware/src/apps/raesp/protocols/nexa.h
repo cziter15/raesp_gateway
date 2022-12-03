@@ -13,5 +13,15 @@
 
 namespace apps::raesp::protocols
 {
+		/*
+		Blocking function that will emit nexa protocol signal on passed tx pin.
+		Will also drive passed led pin as transmission indicator.
+
+		@param pins Pin structure reference (containing pin numbers).
+		@param blOn True if switch should be enabled, false if disabled.
+		@param transmitterId ID of the transmitter (remote).
+		@param recipient Recipient ID/number.
+		@param level Optional dimmer level (in case that recipient is a dimmer switch).
+	*/
 	extern void tx_nexa_switch(const proto_pins& pins, bool blnOn, uint32_t transmitterId, int8_t recipient, int8_t level = 0);
 }

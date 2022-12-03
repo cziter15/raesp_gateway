@@ -16,9 +16,20 @@ namespace apps::config
 	class RaespDeviceConfig : public ksf::ksApplication
 	{
 		public:
-			static const char RaespDeviceName[];
+			static const char RaespDeviceName[];	// Device name.
 
+			/* 
+				Initializes RaespDeviceConfig application.
+
+				@return True on success, false on fail.
+			*/
 			bool init() override;
+
+			/* 
+				Handles RaespDeviceConfig application.
+
+				@return True on success, false on fail.
+			*/
 			bool loop() override;
 	};
 }

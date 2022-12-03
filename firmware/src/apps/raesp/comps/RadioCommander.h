@@ -49,8 +49,8 @@ namespace apps::raesp::comps
 			/*
 				Event handler method called when MQTT service receives a message.
 
-				@param topic Reference of topic string_view.
-				@param message Reference of message string_view.
+				@param topic Topic reference (string_view).
+				@param message Message (aka payload) reference (string_view).
 			*/
 			void onMqttMessage(const std::string_view& topic, const std::string_view& payload);
 
@@ -69,7 +69,7 @@ namespace apps::raesp::comps
 			/*
 				This funciton will handle one repeat of RadioCommand and will block to drive data pin.
 
-				@param cmd Reference to radio command.
+				@param cmd Radio command reference.
 			*/
 			void IRAM_ATTR processRadioCommand(RadioCommand& cmd);
 			
