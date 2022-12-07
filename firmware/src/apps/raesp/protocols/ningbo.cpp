@@ -20,23 +20,24 @@ namespace apps::raesp::protocols
 {
 	void tx_ningbo_bit(const proto_pins& pins, const char bitChar)
 	{
-		bool isHigh{bitChar == '1'};
-		if (bitChar == '0' || isHigh)
+		bool isBitCharOne = bitChar == '1';
+		if (bitChar == '0' || isBitCharOne)
 		{
 			proto_high_for(pins,PULSE_SHORT_A);
 			proto_low_for(pins, PULSE_LONG_B);
 			
-			proto_high_for(pins, isHigh ? PULSE_SHORT_A : PULSE_LONG_A);
-			proto_low_for(pins, isHigh ? PULSE_LONG_B : PULSE_SHORT_B);
+			proto_high_for(pins, isBitCharOne ? PULSE_SHORT_A : PULSE_LONG_A);
+			proto_low_for(pins, isBitCharOne ? PULSE_LONG_B : PULSE_SHORT_B);
 		}
 		else
 		{
-			if (bitChar == 'L' || isHigh)
+			bool isBitCharH = bitChar == 'H';
+			if (bitChar == 'L' || isBitCharH)
 			{
 				for (int8_t i{0}; i < 2; i++)
 				{
-					proto_high_for(pins, isHigh ? PULSE_LONG_A : PULSE_SHORT_A);
-					proto_low_for(pins, isHigh ? PULSE_SHORT_B : PULSE_LONG_B);
+					proto_high_for(pins, isBitCharH ? PULSE_LONG_A : PULSE_SHORT_A);
+					proto_low_for(pins, isBitCharH ? PULSE_SHORT_B : PULSE_LONG_B);
 				}
 
 				proto_high_for(pins, PULSE_SHORT_A);
