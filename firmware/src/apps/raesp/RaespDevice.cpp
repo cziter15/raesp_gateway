@@ -67,6 +67,10 @@ namespace apps::raesp
 				RadioFrontend->forceStandby();
 		});
 
+		ArduinoOTA.onEnd([]() {
+			ksf::saveOtaBootIndicator();
+		});
+
 		/* Application finished initialization, return true as it succedeed. */
 		return true;
 	}
