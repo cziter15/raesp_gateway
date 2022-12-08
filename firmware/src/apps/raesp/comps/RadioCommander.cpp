@@ -64,60 +64,60 @@ namespace apps::raesp::comps
 			return;
 
 		/* Radio commander payload should be one char ('1' or '0') */
-		if (payload.length() == 1)
-		{
-			/* Check command queue overflow. */
-			if (commandQueue.size() > MAX_TX_QUEUE_SIZE)
-			{
-				/* If overflow, then blink RED wifi LED. */
-				if (auto wifiLedSp = wifiLedWp.lock())
-					if (!wifiLedSp->isBlinking())
-						wifiLedSp->setBlinking(100, 5);
-
-				/* ... and tell MQTT via log channel about that. */
-				sendMqttInfo("RadioCmd: Queue is full - discarding!");
-				return;
-			}
-
-			/*	
-				Try split topic. Based of delimeter presence specific protocol is selected.
-
-				Topics like OOK/1234/16 will be handled by nexa protocol.
-				Topics like OOK/1 will be handled by ningbo protocol.
-			 */
-			auto delim_idx{topic.find('/', rfTopicPrefix.length() + 1)};
-
-			uint32_t address{0};
-			int16_t unit{RC_UNIT_NONE};
+		if (payload.length() != 1)
+			return;
 			
-			if (delim_idx != std::string::npos)
-			{
-				auto address_sv{topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())};
-				if (!ksf::from_chars(address_sv, address))
-					return;
+		/* Check command queue overflow. */
+		if (commandQueue.size() > MAX_TX_QUEUE_SIZE)
+		{
+			/* If overflow, then blink RED wifi LED. */
+			if (auto wifiLedSp = wifiLedWp.lock())
+				if (!wifiLedSp->isBlinking())
+					wifiLedSp->setBlinking(100, 5);
 
-				auto unit_sv{topic.substr(delim_idx + 1)};
-				if (!ksf::from_chars(unit_sv, unit))
-					return;
-			}
-			else
-			{
-				auto address_sv{topic.substr(rfTopicPrefix.length())};
-				if (!ksf::from_chars(address_sv, address))
-					return;
-			}
-
-			/* 
-				If command queue is empty, we are in standby mode.
-				We should set radio module to transmit mode and queue new request to send over air.
-				Otherwise, we should have already transmit mode selected, so only queue in that case.
-			*/
-			if (commandQueue.empty())
-				radioModule->transmitDirect();
-
-			/* Push address/unit to command queue. */
-			commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9)});
+			/* ... and tell MQTT via log channel about that. */
+			sendMqttInfo("RadioCmd: Queue is full - discarding!");
+			return;
 		}
+
+		/*	
+			Try split topic. Based of delimeter presence specific protocol is selected.
+
+			Topics like OOK/1234/16 will be handled by nexa protocol.
+			Topics like OOK/1 will be handled by ningbo protocol.
+			*/
+		auto delim_idx{topic.find('/', rfTopicPrefix.length() + 1)};
+
+		uint32_t address{0};
+		int16_t unit{RC_UNIT_NONE};
+		
+		if (delim_idx != std::string::npos)
+		{
+			auto address_sv{topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())};
+			if (!ksf::from_chars(address_sv, address))
+				return;
+
+			auto unit_sv{topic.substr(delim_idx + 1)};
+			if (!ksf::from_chars(unit_sv, unit))
+				return;
+		}
+		else
+		{
+			auto address_sv{topic.substr(rfTopicPrefix.length())};
+			if (!ksf::from_chars(address_sv, address))
+				return;
+		}
+
+		/* 
+			If command queue is empty, we are in standby mode.
+			We should set radio module to transmit mode and queue new request to send over air.
+			Otherwise, we should have already transmit mode selected, so only queue in that case.
+		*/
+		if (commandQueue.empty())
+			radioModule->transmitDirect();
+
+		/* Push address/unit to command queue. */
+		commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9)});
 	}
 
 	void RadioCommander::forceStandby()
