@@ -8,13 +8,18 @@
 
 ![image](https://user-images.githubusercontent.com/5003708/173669777-388dff07-4e13-40c4-8ef1-e9e413eb32a5.png)
 
-## Project goal
-Few years ago, when I've started with designing electronics for fun, I've created something like WiFi Controlled 433 remote for RC power outlets that I've bought from the store. First iteration was something very bad, when I've had no idea how to design PCB, just connected all the pins on two layer board and poured layers with GND. It worked, but not as stable as expected. Then I've redesigned the board, with respect to minimize current loops, but still... not everything working as expected. More info  [here](https://hackaday.io/project/163833-wifi-to-433-mhz-bridge).
+## What and why?
+A few years ago, when I started designing electronics for fun, I created something like a WiFi Controlled 433 remote for RC power outlets that I bought from the store. The first iteration was very bad because I had no idea how to design a PCB. I just connected all the 'wires' on a two-layer board and poured everything with ground. It worked, but not as stably as expected. Then I redesigned the board, taking care to minimize current loops, but still... not everything worked as expected. More info [here](https://hackaday.io/project/163833-wifi-to-433-mhz-bridge).
 
-I've decided to switch to Ra-02 instead of RFM110W. It's theoretically a lot better, because it's programmable and is not only transmitter, but transceiver. That means that I can receive and send messages and I'm not limited to OOK as it even supports LoRA, FSK and more!
+After all, I decided to switch to Ra-02 instead of RFM110W. It's theoretically a lot better because it's programmable and not only a transmitter, but also a transceiver. That means I can receive and send messages and I'm not limited to OOK. It even supports LoRA, FSK and more!
 
 ## Hardware overview
-To build my PCB, I've used limited number of components - few capacitors, resistors, LDO regulator that converts 5V coming from USB to 3.3V required by modules (AMS1117), ESP12-S (ESP8266 based module) that is application brain and also brings WiFi connectivity and RA-02 (SX1278 based module) doing all the RF thing.
+To build my PCB, I used a limited number of components - a few capacitors, resistors, an LDO regulator that converts 5V coming from USB to the 3.3V required by the modules (AMS1117), an ESP12-S (ESP8266-based module) that is the application brain and brings WiFi connectivity, and a RA-02 (SX1278-based module) that does all the RF work.
 
 ## Software overview
-Currently stub only, based on ksIotFramework that controls OOK devices.
+The software is C++ based and powered by ksIotFrameworkLib. It currently supports MQTT and implements the following protocols:
+
+- Ningbo RF protocol
+- Nexa RF protocol
+
+It is currently working only in transmitter mode, but it is possible to even implement LoRa there.
