@@ -6,17 +6,19 @@
 
 **Ra-02 (SX1278) + ESP12-S (ESP8266) gateway**
 
-![image](https://user-images.githubusercontent.com/5003708/173669777-388dff07-4e13-40c4-8ef1-e9e413eb32a5.png)
-
 ## What and why?
 A few years ago, when I started designing electronics for fun, I created something like a WiFi Controlled 433 remote for RC power outlets that I bought from the store. The first iteration was very bad because I had no idea how to design a PCB. I just connected all the 'wires' on a two-layer board and poured everything with ground. It worked, but not as stably as expected. Then I redesigned the board, taking care to minimize current loops, but still... not everything worked as expected. More info [here](https://hackaday.io/project/163833-wifi-to-433-mhz-bridge).
 
 After all, I decided to switch to Ra-02 instead of RFM110W. It's theoretically a lot better because it's programmable and not only a transmitter, but also a transceiver. That means I can receive and send messages and I'm not limited to OOK. It even supports LoRA, FSK and more!
 
 ## Hardware overview
+![image](https://user-images.githubusercontent.com/5003708/173669777-388dff07-4e13-40c4-8ef1-e9e413eb32a5.png)
+
 To build my PCB, I used a limited number of components - a few capacitors, resistors, an LDO regulator that converts 5V coming from USB to the 3.3V required by the modules (AMS1117), an ESP12-S (ESP8266-based module) that is the application brain and brings WiFi connectivity, and a RA-02 (SX1278-based module) that does all the RF work.
 
 ## Software overview
+![image](https://user-images.githubusercontent.com/5003708/206722786-588b524b-16be-46a2-966f-ce0bff59ec86.png)
+
 The software is C++ based and powered by ksIotFrameworkLib. It currently supports MQTT and implements the following protocols:
 
 - Ningbo RF protocol
