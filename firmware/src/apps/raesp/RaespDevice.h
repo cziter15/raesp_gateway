@@ -24,10 +24,7 @@ namespace apps::raesp
 		protected:
 
 			std::weak_ptr<ksf::comps::ksLed> wifiLedWp;										// Weeak pointer to WiFi status LED component.
-			std::weak_ptr<ksf::comps::ksOtaUpdater> otaUpdaterWp;							// Weeak pointer to OTA updater component.
-
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;							// Weeak pointer to MQTT component.
-
 			std::weak_ptr<comps::RadioCommander> radioCommanderWp;							// Weeak pointer to RadioCommander component.
 
 			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandleSp, disEventHandleSp;	// Handles to MQTT events.
