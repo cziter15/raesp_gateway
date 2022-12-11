@@ -22,7 +22,6 @@ namespace apps::raesp
 	class RaespDevice : public ksf::ksApplication
 	{
 		protected:
-			ArduinoOTAClass ArduinoOTA;														// Arduino OTA object.
 
 			std::weak_ptr<ksf::comps::ksLed> wifiLedWp;										// Weeak pointer to WiFi status LED component.
 

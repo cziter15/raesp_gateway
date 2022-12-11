@@ -26,6 +26,9 @@ namespace apps::raesp
 		addComponent<ksf::comps::ksWifiConnector>(config::RaespDeviceConfig::RaespDeviceName);
 		addComponent<ksf::comps::ksMqttDebugResponder>();
 
+		/* Create OTA component. */
+		addComponent<ksf::comps::ksOtaUpdater>(config::RaespDeviceConfig::RaespDeviceName);
+
 		/* Create mqttConnector component. */
 		mqttConnWp = addComponent<ksf::comps::ksMqttConnector>();
 
@@ -45,11 +48,6 @@ namespace apps::raesp
 		if (!ksApplication::init())
 			return false;
 
-		/* ArduinoOTA is allowed to start AFTER app initialization, because tcpip must be initialized. */
-		ArduinoOTA.setHostname(config::RaespDeviceConfig::RaespDeviceName);
-		ArduinoOTA.setPassword("ota_ksiotframework");
-		ArduinoOTA.begin();
-		
 		/* Bind to MQTT callbacks. */
 		if (auto mqttConnSp{mqttConnWp.lock()})
 		{
@@ -60,16 +58,6 @@ namespace apps::raesp
 		/* Start LED blinking on finished init. */
 		if (auto statusLed_sp{wifiLedWp.lock()})
 			statusLed_sp->setBlinking(500);
-
-		/* We want to stop RF before flash start. */
-		ArduinoOTA.onStart([&]() {
-			if (auto RadioFrontend{radioCommanderWp.lock()})
-				RadioFrontend->forceStandby();
-		});
-
-		ArduinoOTA.onEnd([]() {
-			ksf::saveOtaBootIndicator();
-		});
 
 		/* Application finished initialization, return true as it succedeed. */
 		return true;
@@ -89,9 +77,6 @@ namespace apps::raesp
 
 	bool RaespDevice::loop()
 	{
-		/* Handle OTA stuff. */
-		ArduinoOTA.handle();
-
 		/*
 			Return to superclass application loop.
 			It handles all our components and whole app logic.
