@@ -27,7 +27,7 @@ namespace apps::raesp
 		addComponent<ksf::comps::ksMqttDebugResponder>();
 
 		/* Create OTA component. */
-		addComponent<ksf::comps::ksOtaUpdater>(config::RaespDeviceConfig::RaespDeviceName);
+		otaUpdaterWp = addComponent<ksf::comps::ksOtaUpdater>(config::RaespDeviceConfig::RaespDeviceName);
 
 		/* Create mqttConnector component. */
 		mqttConnWp = addComponent<ksf::comps::ksMqttConnector>();
@@ -55,12 +55,22 @@ namespace apps::raesp
 			mqttConnSp->onDisconnected->registerEvent(disEventHandleSp, std::bind(&RaespDevice::onMqttDisconnected, this));
 		}
 
+		/* Bind to OTA callbacks. */
+		if (auto otaUpdaterSp{otaUpdaterWp.lock()})
+			otaUpdaterSp->onUpdateStart->registerEvent(otaUpdateStartEventHandleSp, std::bind(&RaespDevice::onOtaUpdateStart, this));
+
 		/* Start LED blinking on finished init. */
 		if (auto statusLed_sp{wifiLedWp.lock()})
 			statusLed_sp->setBlinking(500);
 
 		/* Application finished initialization, return true as it succedeed. */
 		return true;
+	}
+
+	void RaespDevice::onOtaUpdateStart()
+	{
+		if (auto radioCommanderSp{radioCommanderWp.lock()})
+			radioCommanderSp->forceStandby();
 	}
 
 	void RaespDevice::onMqttDisconnected()
