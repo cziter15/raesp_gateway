@@ -60,7 +60,7 @@ namespace apps::raesp::protocols
 		tx_ningbo_bitarrray(pins, "1000");
 
 		for (int8_t b{0}; b < 7; ++b)
-			tx_ningbo_bit(pins, ((uint32_t)(switchId & ((uint32_t)1 << b)) != 0) ? '1' : '0');
+			tx_ningbo_bit(pins, ((uint32_t)(switchId & (1 << b)) != 0) ? '1' : '0');
 
 		tx_ningbo_bit(pins, blnOn ? 'H' : 'L');
 	}

@@ -27,7 +27,7 @@ namespace apps::raesp::protocols
 		tx_nexa_bit(pins, !b);
 	}
 
-	void tx_nexa_switch(const proto_pins& pins, bool blnOn, uint32_t transmitterId, int8_t recipient, int8_t level)
+	void tx_nexa_switch(const proto_pins& pins, bool blnOn, uint32_t transmitterId, int8_t groupId, int8_t level)
 	{
 		// start pulse
 		proto_high_for(pins, PULSE_TIME);
@@ -38,7 +38,7 @@ namespace apps::raesp::protocols
 			tx_nexa_pair(pins, (uint32_t)(transmitterId & ((uint32_t)1 << i)) != 0);
 
 		// Send 26th bit - group 1/0
-		tx_nexa_pair(pins, recipient == -1);
+		tx_nexa_pair(pins, groupId == -1);
 
 		if (level > 0)
 		{
@@ -54,7 +54,7 @@ namespace apps::raesp::protocols
 
 		// 4 bits - recipient
 		for (int8_t i{3}; i >= 0; --i)
-			tx_nexa_pair(pins, (recipient & (1 << i)) != 0);
+			tx_nexa_pair(pins, (groupId & (1 << i)) != 0);
 
 		if (level > 0)
 			for (int8_t i{3}; i >= 0; --i)
