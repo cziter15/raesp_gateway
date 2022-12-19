@@ -89,10 +89,10 @@ namespace apps::raesp::comps
 			/*
 				Initializes RadioCommander component.
 
-				@param owner Pointer to owning composable interface (application).
+				@param owner Pointer to owning ksApplication.
 				@return True on success, false on fail.
 			*/
-			bool init(ksf::ksComposable* owner) override;
+			bool init(ksf::ksApplication* owner) override;
 
 			/* 
 				Handles RadioCommander logic.

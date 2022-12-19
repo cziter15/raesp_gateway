@@ -33,7 +33,7 @@ namespace apps::raesp::comps
 		digitalWrite(dio2pin, LOW);
 	}
 
-	bool RadioCommander::init(ksf::ksComposable* owner)
+	bool RadioCommander::init(ksf::ksApplication* owner)
 	{
 		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
 

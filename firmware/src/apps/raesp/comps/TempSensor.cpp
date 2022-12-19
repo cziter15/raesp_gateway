@@ -20,7 +20,7 @@ namespace apps::raesp::comps
 		: dataPin(dataPin), enabPin(enabPin), resolution(resolution), measurementTimer(tempUpdateInterval)
 	{}
 
-	bool TempSensor::init(ksf::ksComposable* owner)
+	bool TempSensor::init(ksf::ksApplication* owner)
 	{
 		this->owner = owner;
 		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
