@@ -49,13 +49,13 @@ namespace apps::raesp::comps
 	void RadioCommander::onMqttConnected()
 	{
 		if (auto mqttConnSp{mqttConnWp.lock()})
-			mqttConnSp->subscribe(rfTopicPrefix + "#");
+			mqttConnSp->subscribe(rfTopicPrefix + '#');
 	}
 
 	void RadioCommander::sendMqttInfo(const std::string& info) const
 	{
 		if (auto mqttConnSp{mqttConnWp.lock()})
-			mqttConnSp->publish("log", info);
+			mqttConnSp->publish(PGM_("log"), info);
 	}
 
 	void RadioCommander::onMqttMessage(const std::string_view& topic, const std::string_view& payload)
@@ -76,7 +76,7 @@ namespace apps::raesp::comps
 					wifiLedSp->setBlinking(100, 5);
 
 			/* ... and tell MQTT via log channel about that. */
-			sendMqttInfo("RadioCmd: Queue is full - discarding!");
+			sendMqttInfo(PGM_("RadioCmd: Queue is full - discarding!"));
 			return;
 		}
 
@@ -117,7 +117,7 @@ namespace apps::raesp::comps
 			radioModule->transmitDirect();
 
 		/* Push address/unit to command queue. */
-		commandQueue.push({payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9)});
+		commandQueue.emplace(payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9));
 	}
 
 	void RadioCommander::forceStandby()
@@ -159,10 +159,10 @@ namespace apps::raesp::comps
 			if (currentCommand.repeats <= 0)
 			{
 				sendMqttInfo(
-					"RadioCmd: Sent! "
-					"[ A: " + ksf::to_string(currentCommand.address) + 
-					" | U: " + ksf::to_string(currentCommand.unit) + 
-					" | V: " + ksf::to_string(currentCommand.enable) + " ]"
+					PGM_("RadioCmd: Sent! "
+					"[ A: ") + ksf::to_string(currentCommand.address) + 
+					PGM_(" | U: ") + ksf::to_string(currentCommand.unit) + 
+					PGM_(" | V: ") + ksf::to_string(currentCommand.enable) + PGM_(" ]")
 				);
 
 				/* Pop current request (remove) from queue, coz we are done with it. */

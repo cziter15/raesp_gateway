@@ -31,14 +31,6 @@ namespace apps::raesp
 			std::shared_ptr<ksf::evt::ksEventHandle> otaUpdateStartEventHandleSp;			// Handles to OTA events.
 
 			/*
-				Event handler method called when MQTT service receives a message.
-
-				@param topic Reference of topic string_view.
-				@param message Reference of message string_view.
-			*/
-			void onMqttMessage(const String& topic, const String& payload);
-
-			/*
 				Event handler method called when MQTT service connected to server. 
 			*/
 			void onMqttConnected();

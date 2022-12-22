@@ -19,10 +19,21 @@ namespace apps::raesp::comps
 {
 	struct RadioCommand
 	{
-		bool enable;
-		uint32_t address;
-		int16_t unit;
-		uint8_t repeats;
+		bool enable;			// True to enable, false to disable.
+		uint32_t address; 		// RF address.
+		int16_t unit;			// RF unit.
+		uint8_t repeats;		// Number of repeats.
+
+		/*
+			Constructor of RadioCommand.
+
+			@param enable True to enable, false to disable.
+			@param address RF address.
+			@param unit RF unit.
+			@param repeats Number of repeats.
+		*/
+		RadioCommand(bool enable, uint32_t address, int16_t unit, uint8_t repeats) :
+			enable(enable), address(address), unit(unit), repeats(repeats) {}
 	};
 
 	class RadioCommander : public ksf::ksComponent
