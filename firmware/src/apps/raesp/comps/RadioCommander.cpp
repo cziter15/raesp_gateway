@@ -26,7 +26,8 @@ namespace apps::raesp::comps
 		radioModule = std::make_shared<SX1278>(radioPhy.get());
 
 		/* Setup radio module. */
-		radioModule->beginFSK(TRANSMIT_FREQ, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
+		cachedFrequency = TRANSMIT_FREQ_NEXA;
+		radioModule->beginFSK(cachedFrequency, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
 
 		/* Setup radio TX pin. */
 		pinMode(dio2pin, OUTPUT);
@@ -130,15 +131,30 @@ namespace apps::raesp::comps
 			radioModule->standby();
 	}
 
+	void RadioCommander::changeFrequency(double frequency)
+	{
+		if (cachedFrequency != frequency)
+		{
+			cachedFrequency = frequency;
+			radioModule->setFrequency(frequency);
+		}
+	}
+
 	void RadioCommander::processRadioCommand(RadioCommand &command)
 	{
 		if (auto radioLedSp{radioLedWp.lock()})
 		{
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
 			if (command.unit == RC_UNIT_NONE)
+			{
+				changeFrequency(TRANSMIT_FREQ_NINGBO);
 				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address);
+			}
 			else
+			{
+				changeFrequency(TRANSMIT_FREQ_NEXA);
 				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address, command.unit);
+			}
 		}
 
 		command.repeats--;

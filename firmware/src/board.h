@@ -24,8 +24,10 @@
 
 /* Transmit power to set on Ra-02 module. */
 #define TRANSMIT_POWER_DBM 13
-/* Transmit frequency to set on Ra-02 module*/
-#define TRANSMIT_FREQ 433.928
+/* Transmit frequency to set on Ra-02 module for NEXA protocol. */
+#define TRANSMIT_FREQ_NEXA 433.927
+/* Transmit frequency to set on Ra-02 module for NINGBO protocol. */
+#define TRANSMIT_FREQ_NINGBO 433.875
 
 #ifdef USING_TEMP_SENSOR
 	/* Share temp sensor pins with other functions. */

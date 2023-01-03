@@ -57,6 +57,8 @@ namespace apps::raesp::comps
 			const std::string rfTopicPrefix{"rfswitch/"};										// RF command topic prefix.
 			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandleSp, msgEventHandleSp;		// Shared ptrs to events.
 
+			double cachedFrequency{0.0};														// Cached frequency value.
+
 			/*
 				Event handler method called when MQTT service receives a message.
 
@@ -83,6 +85,13 @@ namespace apps::raesp::comps
 				@param cmd Radio command reference.
 			*/
 			void IRAM_ATTR processRadioCommand(RadioCommand& cmd);
+
+			/*
+				Changes Radio Module frequency.
+
+				@param freq Frequency to set.
+			*/
+			void IRAM_ATTR changeFrequency(double freq);
 			
 		public:
 			/*
