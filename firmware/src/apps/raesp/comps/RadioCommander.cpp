@@ -30,8 +30,12 @@ namespace apps::raesp::comps
 		radioModule->beginFSK(cachedFrequency, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
 
 		/* Setup radio TX pin. */
-		pinMode(dio2pin, OUTPUT);
-		digitalWrite(dio2pin, LOW);
+		#if TX_WITH_PULLUP
+			pinMode(dio2pin, INPUT_PULLUP);
+			GPES = (1 << dio2pin);
+		#else
+			pinMode(dio2pin, OUTPUT);
+		#endif
 	}
 
 	bool RadioCommander::init(ksf::ksApplication* owner)
@@ -146,15 +150,9 @@ namespace apps::raesp::comps
 		{
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
 			if (command.unit == RC_UNIT_NONE)
-			{
-				changeFrequency(TRANSMIT_FREQ_NINGBO);
 				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address);
-			}
 			else
-			{
-				changeFrequency(TRANSMIT_FREQ_NEXA);
 				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address, command.unit);
-			}
 		}
 
 		command.repeats--;

@@ -23,11 +23,14 @@
 #define CFG_DIO2_PIN 4
 
 /* Transmit power to set on Ra-02 module. */
-#define TRANSMIT_POWER_DBM 13
+#define TRANSMIT_POWER_DBM 10
 /* Transmit frequency to set on Ra-02 module for NEXA protocol. */
 #define TRANSMIT_FREQ_NEXA 433.927
 /* Transmit frequency to set on Ra-02 module for NINGBO protocol. */
 #define TRANSMIT_FREQ_NINGBO 433.875
+
+/* Defines if logic is controlled by switching pin mode (PULLUP <> OUTPUT) [1] or by controlling pin output [0]. */
+#define TX_WITH_PULLUP 1
 
 #ifdef USING_TEMP_SENSOR
 	/* Share temp sensor pins with other functions. */
