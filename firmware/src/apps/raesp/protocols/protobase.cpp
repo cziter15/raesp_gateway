@@ -16,12 +16,7 @@ namespace apps::raesp::protocols
 	void proto_prepare_txpin(uint8_t txpin)
 	{
 		pinMode(txpin, OUTPUT);
-
-		GPIO_REG_WRITE(
-			GPIO_DRIVE_STRENGTH_REG, 
-			(GPIO_REG_READ(GPIO_DRIVE_STRENGTH_REG) & 0xfffff300) | 
-			(GPIO_DRIVE_STRENGTH_LOW & 0xff)
-		);
+		GPOS = (GPOS & ~(3 << (txpin * 2))) | (0 << (txpin * 2));  // Set drive strength to low
 	}
 
 	void proto_low_for(const proto_pins& pins, uint32_t us)
