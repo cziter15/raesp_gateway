@@ -13,9 +13,19 @@
 
 namespace apps::raesp::protocols
 {
+	void proto_prepare_txpin(uint8_t txpin)
+	{
+		#if DRIVE_TX_VIA_PULLUP
+			pinMode(txpin, INPUT_PULLUP);
+			GPES = (1 << txpin);
+		#else
+			pinMode(txpin, OUTPUT);
+		#endif
+	}
+
 	void proto_low_for(const proto_pins& pins, uint32_t us)
 	{
-		#if TX_WITH_PULLUP
+		#if DRIVE_TX_VIA_PULLUP
 			GPES = (1 << pins.tx);
 		#else
 			GPOC = (1 << pins.tx);
@@ -27,7 +37,7 @@ namespace apps::raesp::protocols
 
 	void proto_high_for(const proto_pins& pins, uint32_t us)
 	{
-		#if TX_WITH_PULLUP
+		#if DRIVE_TX_VIA_PULLUP
 			GPEC = (1 << pins.tx);
 		#else
 			GPOS = (1 << pins.tx);

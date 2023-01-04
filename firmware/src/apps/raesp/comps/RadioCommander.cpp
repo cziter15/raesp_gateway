@@ -30,12 +30,7 @@ namespace apps::raesp::comps
 		radioModule->beginFSK(cachedFrequency, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
 
 		/* Setup radio TX pin. */
-		#if TX_WITH_PULLUP
-			pinMode(dio2pin, INPUT_PULLUP);
-			GPES = (1 << dio2pin);
-		#else
-			pinMode(dio2pin, OUTPUT);
-		#endif
+		protocols::proto_prepare_txpin(dio2pin);
 	}
 
 	bool RadioCommander::init(ksf::ksApplication* owner)
@@ -153,9 +148,14 @@ namespace apps::raesp::comps
 				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address);
 			else
 				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address, command.unit);
-		}
 
-		command.repeats--;
+			/* Decrement repeats countdown. */
+			command.repeats--;
+		}
+		else
+		{
+			command.repeats = 0;
+		}
 	}
 
 	bool RadioCommander::loop()

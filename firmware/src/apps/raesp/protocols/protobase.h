@@ -20,6 +20,13 @@ namespace apps::raesp::protocols
 	};
 
 	/*
+		Sets up pins for protocol.
+
+		@param txpin TX pin number.
+	*/
+	extern void proto_prepare_txpin(uint8_t txpin);
+
+	/*
 		Sets HIGH state on LED and TX pin and blocks for passed microseconds.
 
 		@param pins Pin structure reference (containing pin numbers).
