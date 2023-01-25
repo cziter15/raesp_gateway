@@ -60,7 +60,7 @@ namespace apps::raesp::comps
 
 	void RadioCommander::onMqttMessage(const std::string_view& topic, const std::string_view& payload)
 	{
-		if (topic.find(rfTopicPrefix) == std::string::npos)
+		if (topic.find(rfTopicPrefix) == std::string_view::npos)
 			return;
 
 		/* Radio commander payload should be one char ('1' or '0') */
@@ -91,7 +91,7 @@ namespace apps::raesp::comps
 		uint32_t address{0};
 		int16_t unit{RC_UNIT_NONE};
 		
-		if (delim_idx != std::string::npos)
+		if (delim_idx != std::string_view::npos)
 		{
 			auto address_sv{topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())};
 			if (!ksf::from_chars(address_sv, address))
