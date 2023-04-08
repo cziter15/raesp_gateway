@@ -65,7 +65,7 @@ namespace apps::raesp::comps
 				@param topic Topic reference (string_view).
 				@param message Message (aka payload) reference (string_view).
 			*/
-			void onMqttMessage(const std::string_view& topic, const std::string_view& payload);
+			void onMqttDevMessage(const std::string_view& topic, const std::string_view& payload);
 
 			/*
 				Event handler method called when MQTT service connected to server. 

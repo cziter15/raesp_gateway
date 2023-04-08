@@ -40,7 +40,7 @@ namespace apps::raesp::comps
 		if (auto mqttConnSp{mqttConnWp.lock()})
 		{
 			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RadioCommander::onMqttConnected, this));
-			mqttConnSp->onMesssage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttMessage, this, _1, _2));
+			mqttConnSp->onDevMesssage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttDevMessage, this, _1, _2));
 		}
 	}
 
@@ -56,7 +56,7 @@ namespace apps::raesp::comps
 			mqttConnSp->publish(PGM_("log"), info);
 	}
 
-	void RadioCommander::onMqttMessage(const std::string_view& topic, const std::string_view& payload)
+	void RadioCommander::onMqttDevMessage(const std::string_view& topic, const std::string_view& payload)
 	{
 		if (topic.find(rfTopicPrefix) == std::string_view::npos)
 			return;
