@@ -40,7 +40,7 @@ namespace apps::raesp::comps
 		if (auto mqttConnSp{mqttConnWp.lock()})
 		{
 			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RadioCommander::onMqttConnected, this));
-			mqttConnSp->onDevMesssage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttDevMessage, this, _1, _2));
+			mqttConnSp->onDeviceMessage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttDevMessage, this, _1, _2));
 		}
 	}
 

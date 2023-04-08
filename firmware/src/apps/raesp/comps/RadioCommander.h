@@ -107,12 +107,11 @@ namespace apps::raesp::comps
 			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin,	ksLedWP wifiLedWp, ksLedWP radioLedWp);
 
 			/*
-				Initializes RadioCommander component.
+				Post initializes RadioCommander component.
 
 				@param owner Pointer to owning ksApplication.
-				@return True on success, false on fail.
 			*/
-			bool init(ksf::ksApplication* owner) override;
+			void postInit(ksf::ksApplication* owner) override;
 
 			/* 
 				Handles RadioCommander logic.
