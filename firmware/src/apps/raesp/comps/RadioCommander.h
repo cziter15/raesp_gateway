@@ -110,8 +110,9 @@ namespace apps::raesp::comps
 				Post initializes RadioCommander component.
 
 				@param owner Pointer to owning ksApplication.
+				@return True on success, false on fail.
 			*/
-			void postInit(ksf::ksApplication* owner) override;
+			bool postInit(ksf::ksApplication* owner) override;
 
 			/* 
 				Handles RadioCommander logic.

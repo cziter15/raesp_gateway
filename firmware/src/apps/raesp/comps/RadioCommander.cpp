@@ -33,7 +33,7 @@ namespace apps::raesp::comps
 		protocols::proto_prepare_txpin(dio2pin);
 	}
 
-	void RadioCommander::postInit(ksf::ksApplication* owner)
+	bool RadioCommander::postInit(ksf::ksApplication* owner)
 	{
 		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
 
@@ -42,6 +42,8 @@ namespace apps::raesp::comps
 			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&RadioCommander::onMqttConnected, this));
 			mqttConnSp->onDeviceMessage->registerEvent(msgEventHandleSp, std::bind(&RadioCommander::onMqttDevMessage, this, _1, _2));
 		}
+
+		return true;
 	}
 
 	void RadioCommander::onMqttConnected()
