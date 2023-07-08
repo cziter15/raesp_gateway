@@ -144,10 +144,13 @@ namespace apps::raesp::comps
 		if (auto radioLedSp{radioLedWp.lock()})
 		{
 			/* Here we decide if we use ningbo protocol or nexa protocol. */
+			uint8_t radioPin{static_cast<uint8_t>(radioPhy->getGpio())};
+			uint8_t ledPin{static_cast<uint8_t>(radioPhy->getGpio())};
+
 			if (command.unit == RC_UNIT_NONE)
-				protocols::tx_ningbo_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address);
+				protocols::tx_ningbo_switch({radioPin, ledPin}, command.enable, command.address);
 			else
-				protocols::tx_nexa_switch({radioPhy->getGpio(), radioLedSp->getPin()}, command.enable, command.address, command.unit);
+				protocols::tx_nexa_switch({radioPin, ledPin}, command.enable, command.address, command.unit);
 
 			/* Decrement repeats countdown. */
 			command.repeats--;
