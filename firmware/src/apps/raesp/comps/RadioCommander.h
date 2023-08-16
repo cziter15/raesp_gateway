@@ -122,8 +122,8 @@ namespace apps::raesp::comps
 			bool loop() override;
 
 			/* 
-				Forces sleep state on Radio Module. Will clear radio command queue.
+				Stops all TX. Will clear radio command queue.
 			*/
-			void forceSleep();
+			void forceStandby();
 	};
 }
