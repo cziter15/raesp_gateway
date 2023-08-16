@@ -109,28 +109,25 @@ namespace apps::raesp::comps
 		}
 
 		/* 
-			If command queue is empty, we are in standby mode.
+			If command queue is empty, thr module is in IDLE state.
 			We should set radio module to transmit mode and queue new request to send over air.
 			Otherwise, we should have already transmit mode selected, so only queue in that case.
 		*/
-		if (commandQueue.empty()) 
-		{
-			radioModule->standby();
+		if (commandQueue.empty())
 			radioModule->transmitDirect();
-		}
 
 		/* Push address/unit to command queue. */
 		commandQueue.emplace(payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9));
 	}
 
-	void RadioCommander::forceSleep()
+	void RadioCommander::forceStandby()
 	{
 		/* Erase command queue. */
 		commandQueue = {};
 
-		/* Set radio module sleep state. */
+		/* Set radio module standby state - stop TX. */
 		if (radioModule)
-			radioModule->sleep();
+			radioModule->standby();
 	}
 
 	void RadioCommander::changeFrequency(double frequency)
@@ -189,9 +186,9 @@ namespace apps::raesp::comps
 				/* Pop current request (remove) from queue, coz we are done with it. */
 				commandQueue.pop();
 				
-				/* If command queue is empty now, we can set RF module to standby state. */
+				/* If command queue is empty now, then call standby to get out of tx mode. */
 				if (commandQueue.empty())
-					radioModule->sleep();
+					radioModule->standby();
 			}
 		}
 
