@@ -71,7 +71,7 @@ namespace apps::raesp
 	void RaespDevice::onOtaUpdateStart()
 	{
 		if (auto radioCommanderSp{radioCommanderWp.lock()})
-			radioCommanderSp->forceStamdby();
+			radioCommanderSp->forceStandby();
 	}
 
 	void RaespDevice::onMqttDisconnected()
