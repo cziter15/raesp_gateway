@@ -113,21 +113,24 @@ namespace apps::raesp::comps
 			We should set radio module to transmit mode and queue new request to send over air.
 			Otherwise, we should have already transmit mode selected, so only queue in that case.
 		*/
-		if (commandQueue.empty())
+		if (commandQueue.empty()) 
+		{
+			radioModule->standby();
 			radioModule->transmitDirect();
+		}
 
 		/* Push address/unit to command queue. */
 		commandQueue.emplace(payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9));
 	}
 
-	void RadioCommander::forceStandby()
+	void RadioCommander::forceSleep()
 	{
 		/* Erase command queue. */
 		commandQueue = {};
 
-		/* Set randio module standby state. */
+		/* Set radio module sleep state. */
 		if (radioModule)
-			radioModule->standby();
+			radioModule->sleep();
 	}
 
 	void RadioCommander::changeFrequency(double frequency)
@@ -188,7 +191,7 @@ namespace apps::raesp::comps
 				
 				/* If command queue is empty now, we can set RF module to standby state. */
 				if (commandQueue.empty())
-					radioModule->standby();
+					radioModule->sleep();
 			}
 		}
 
