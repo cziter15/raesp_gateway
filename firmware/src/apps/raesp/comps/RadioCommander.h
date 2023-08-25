@@ -122,7 +122,7 @@ namespace apps::raesp::comps
 			bool loop() override;
 
 			/* 
-				Forces standby state on Radio Module. Will clear radio command queue.
+				Stops all TX. Will clear radio command queue.
 			*/
 			void forceStandby();
 	};

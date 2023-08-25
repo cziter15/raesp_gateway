@@ -109,7 +109,7 @@ namespace apps::raesp::comps
 		}
 
 		/* 
-			If command queue is empty, we are in standby mode.
+			If command queue is empty, thr module is in IDLE state.
 			We should set radio module to transmit mode and queue new request to send over air.
 			Otherwise, we should have already transmit mode selected, so only queue in that case.
 		*/
@@ -125,7 +125,7 @@ namespace apps::raesp::comps
 		/* Erase command queue. */
 		commandQueue = {};
 
-		/* Set randio module standby state. */
+		/* Set radio module standby state - stop TX. */
 		if (radioModule)
 			radioModule->standby();
 	}
@@ -186,7 +186,7 @@ namespace apps::raesp::comps
 				/* Pop current request (remove) from queue, coz we are done with it. */
 				commandQueue.pop();
 				
-				/* If command queue is empty now, we can set RF module to standby state. */
+				/* If command queue is empty now, then call standby to get out of tx mode. */
 				if (commandQueue.empty())
 					radioModule->standby();
 			}
