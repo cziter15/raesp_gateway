@@ -141,25 +141,25 @@ namespace apps::raesp::comps
 
 	void RadioCommander::processRadioCommand(RadioCommand &command)
 	{
-		if (auto radioLedSp{radioLedWp.lock()})
-		{
-			/* Get radio pin and led pin. */
-			uint8_t radioPin{static_cast<uint8_t>(radioPhy->getGpio())};
-			uint8_t ledPin{static_cast<uint8_t>(radioLedSp->getPin())};
-
-			/* Here we decide if we use ningbo protocol or nexa protocol. */
-			if (command.unit == RC_UNIT_NONE)
-				protocols::tx_ningbo_switch({radioPin, ledPin}, command.enable, command.address);
-			else
-				protocols::tx_nexa_switch({radioPin, ledPin}, command.enable, command.address, command.unit);
-
-			/* Decrement repeats countdown. */
-			command.repeats--;
-		}
-		else
+		auto radioLedSp{radioLedWp.lock()};
+		if (!radioLedSp)
 		{
 			command.repeats = 0;
+			return;
 		}
+
+		/* Get radio pin and led pin. */
+		uint8_t radioPin{static_cast<uint8_t>(radioPhy->getGpio())};
+		uint8_t ledPin{static_cast<uint8_t>(radioLedSp->getPin())};
+
+		/* Here we decide if we use ningbo protocol or nexa protocol. */
+		if (command.unit == RC_UNIT_NONE)
+			protocols::tx_ningbo_switch({radioPin, ledPin}, command.enable, command.address);
+		else
+			protocols::tx_nexa_switch({radioPin, ledPin}, command.enable, command.address, command.unit);
+
+		/* Decrement repeats countdown. */
+		command.repeats--;
 	}
 
 	bool RadioCommander::loop()
