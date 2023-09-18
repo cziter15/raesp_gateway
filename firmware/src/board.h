@@ -29,7 +29,7 @@
 /* Transmit frequency to set on Ra-02 module for NINGBO protocol. */
 #define TRANSMIT_FREQ_NINGBO 433.875
 
-#ifdef USING_TEMP_SENSOR
+#if USE_TEMP_SENSOR
 	/* Share temp sensor pins with other functions. */
 	#define TEMP_DATA_PIN CFG_STATUS_LED
 	/* Share temp sensor pins with other functions. */

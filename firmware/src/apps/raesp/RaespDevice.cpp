@@ -38,7 +38,7 @@ namespace apps::raesp
 		auto radioLedWp{addComponent<ksf::comps::ksLed>(CFG_RADIO_LED)};
 
 		/* Create Temperature sensing component. */
-		#if USING_TEMP_SENSOR
+		#if USE_TEMP_SENSOR
 			addComponent<comps::TempSensor>(TEMP_DATA_PIN, TEMP_UPDATE_INTERVAL_MS, TEMP_SENSOR_RESOLUTION, TEMP_ENAB_PIN);
 		#endif
 
