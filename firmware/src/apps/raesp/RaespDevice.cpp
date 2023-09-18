@@ -12,7 +12,7 @@
 #include "../config/RaespDeviceConfig.h"
 #include "comps/RadioCommander.h"
 
-#if USING_TEMP_SENSOR
+#if USE_TEMP_SENSOR
 	#include "comps/TempSensor.h"
 #endif
 
