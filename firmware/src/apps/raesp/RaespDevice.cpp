@@ -28,7 +28,7 @@ namespace apps::raesp
 		addComponent<ksf::comps::ksDevStatMqttReporter>();
 
 		/* Create OTA component. */
-		auto otaUpdaterWp{addComponent<ksf::comps::ksOtaUpdater>()};
+		auto otaUpdaterWp{addComponent<ksf::comps::ksDevicePortal>()};
 
 		/* Create mqttConnector component. */
 		mqttConnWp = addComponent<ksf::comps::ksMqttConnector>();
