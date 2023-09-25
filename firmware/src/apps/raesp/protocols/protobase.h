@@ -16,7 +16,7 @@ namespace apps::raesp::protocols
 	struct proto_pins
 	{
 		uint8_t tx;		// TX pin number.
-		uint8_t led;	// LED pin number.
+		int8_t led;		// LED pin number.
 	};
 
 	/*

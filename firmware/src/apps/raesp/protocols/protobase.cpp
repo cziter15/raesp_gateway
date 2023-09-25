@@ -22,14 +22,16 @@ namespace apps::raesp::protocols
 	void proto_low_for(const proto_pins& pins, uint32_t us)
 	{
 		GPOC = (1 << pins.tx);
-		GPOC = (1 << pins.led);
+		if (pins.led != -1)
+			GPOC = (1 << pins.led);
 		os_delay_us(us);
 	}
 
 	void proto_high_for(const proto_pins& pins, uint32_t us)
 	{
 		GPOS = (1 << pins.tx);
-		GPOS = (1 << pins.led);
+		if (pins.led != -1)
+			GPOS = (1 << pins.led);
 		os_delay_us(us);
 	}
 }

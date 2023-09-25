@@ -141,16 +141,16 @@ namespace apps::raesp::comps
 
 	void RadioCommander::processRadioCommand(RadioCommand &command)
 	{
-		auto radioLedSp{radioLedWp.lock()};
-		if (!radioLedSp)
+		int8_t ledPin{-1};
+
+		if (auto radioLedSp{radioLedWp.lock()})
 		{
-			command.repeats = 0;
+			ledPin = radioLedSp->getPin();
 			return;
 		}
 
 		/* Get radio pin and led pin. */
 		uint8_t radioPin{static_cast<uint8_t>(radioPhy->getGpio())};
-		uint8_t ledPin{static_cast<uint8_t>(radioLedSp->getPin())};
 
 		/* Here we decide if we use ningbo protocol or nexa protocol. */
 		if (command.unit == RC_UNIT_NONE)
