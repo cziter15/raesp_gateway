@@ -144,11 +144,8 @@ namespace apps::raesp::comps
 		int8_t ledPin{-1};
 
 		if (auto radioLedSp{radioLedWp.lock()})
-		{
 			ledPin = radioLedSp->getPin();
-			return;
-		}
-
+	
 		/* Get radio pin and led pin. */
 		uint8_t radioPin{static_cast<uint8_t>(radioPhy->getGpio())};
 
