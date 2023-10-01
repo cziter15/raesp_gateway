@@ -24,7 +24,7 @@ namespace apps::raesp::comps
 			ksf::ksApplication* owner{nullptr};								// Parent application pointer.
 
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;			// Weak pointer to mqtt connector.
-			std::shared_ptr<DS18B20> ds18handler;							// Temp sensor handle ptr.
+			std::unique_ptr<DS18B20> ds18handler;							// Temp sensor handle ptr.
 
 			uint8_t dataPin{0};												// Temp sensor data pin.
 			std::optional<uint8_t> enabPin;									// Temp sensor emable pin.
@@ -82,5 +82,10 @@ namespace apps::raesp::comps
 				@return True on success, false on fail.
 			*/
 			bool loop() override;
+
+			/*
+				Destructor to free up resources.
+			*/
+			virtual ~TempSensor();
 	};
 }

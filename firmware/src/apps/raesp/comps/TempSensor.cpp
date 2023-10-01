@@ -56,7 +56,7 @@ namespace apps::raesp::comps
 		/* Create DS18 handler. */
 		if (!ds18handler)
 		{
-			ds18handler = std::make_shared<DS18B20>(dataPin);
+			ds18handler = std::make_unique<DS18B20>(dataPin);
 			if (ds18handler && resolution.has_value()) 
 				ds18handler->setResolution(*resolution);
 		}
@@ -103,4 +103,6 @@ namespace apps::raesp::comps
 
 		return true;
 	}
+
+	TempSensor::~TempSensor() = default;
 }

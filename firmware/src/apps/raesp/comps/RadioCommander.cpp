@@ -22,8 +22,8 @@ namespace apps::raesp::comps
 		: radioLedWp(radioLedWp), wifiLedWp(wifiLedWp)
 	{
 		/* Instantiate radio PHY/Module. */
-		radioPhy = std::make_shared<Module>(ssPin, dio0pin, rstPin, dio2pin);
-		radioModule = std::make_shared<SX1278>(radioPhy.get());
+		radioPhy = std::make_unique<Module>(ssPin, dio0pin, rstPin, dio2pin);
+		radioModule = std::make_unique<SX1278>(radioPhy.get());
 
 		/* Setup radio module. */
 		cachedFrequency = TRANSMIT_FREQ_NEXA;
@@ -191,4 +191,6 @@ namespace apps::raesp::comps
 
 		return true;
 	}
+
+	RadioCommander::~RadioCommander() = default;
 }

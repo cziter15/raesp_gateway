@@ -27,8 +27,8 @@ namespace apps::raesp
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;							// Weeak pointer to MQTT component.
 			std::weak_ptr<comps::RadioCommander> radioCommanderWp;							// Weeak pointer to RadioCommander component.
 
-			std::shared_ptr<ksf::evt::ksEventHandle> connEventHandleSp, disEventHandleSp;	// Handles to MQTT events.
-			std::shared_ptr<ksf::evt::ksEventHandle> otaUpdateStartEventHandleSp;			// Handles to OTA events.
+			std::unique_ptr<ksf::evt::ksEventHandle> connEventHandleSp, disEventHandleSp;	// Handles to MQTT events.
+			std::unique_ptr<ksf::evt::ksEventHandle> otaUpdateStartEventHandleSp;			// Handles to OTA events.
 
 			/*
 				Event handler method called when MQTT service connected to server. 
