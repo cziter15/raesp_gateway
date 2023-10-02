@@ -55,7 +55,7 @@ namespace apps::raesp::comps
 	void RadioCommander::sendMqttInfo(const std::string& info) const
 	{
 		if (auto mqttConnSp{mqttConnWp.lock()})
-			mqttConnSp->publish(PGM_("log"), info);
+			mqttConnSp->publish(PSTR("log"), info);
 	}
 
 	void RadioCommander::onMqttDevMessage(const std::string_view& topic, const std::string_view& payload)
@@ -76,7 +76,7 @@ namespace apps::raesp::comps
 					wifiLedSp->setBlinking(100, 5);
 
 			/* ... and tell MQTT via log channel about that. */
-			sendMqttInfo(PGM_("RadioCmd: Queue is full - discarding!"));
+			sendMqttInfo(PSTR("RadioCmd: Queue is full - discarding!"));
 			return;
 		}
 
@@ -174,10 +174,9 @@ namespace apps::raesp::comps
 			if (currentCommand.repeats <= 0)
 			{
 				sendMqttInfo(
-					PGM_("RadioCmd: Sent! "
-					"[ A: ") + ksf::to_string(currentCommand.address) + 
-					PGM_(" | U: ") + ksf::to_string(currentCommand.unit) + 
-					PGM_(" | V: ") + ksf::to_string(currentCommand.enable) + PGM_(" ]")
+					PSTR("RadioCmd: Sent! [ A: ") + ksf::to_string(currentCommand.address) + 
+					PSTR(" | U: ") + ksf::to_string(currentCommand.unit) + 
+					PSTR(" | V: ") + ksf::to_string(currentCommand.enable) + PSTR(" ]")
 				);
 
 				/* Pop current request (remove) from queue, coz we are done with it. */

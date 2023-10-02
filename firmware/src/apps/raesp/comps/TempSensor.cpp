@@ -66,7 +66,7 @@ namespace apps::raesp::comps
 		{
 			auto tempC{ds18handler->getTempC()};
 			if (fabsf(TEMP_SENSOR_INVALID_TEMP - tempC) > std::numeric_limits<float>::epsilon())
-				mqttConnSp->publish(PGM_("tempSensor"), ksf::to_string(tempC, 1));
+				mqttConnSp->publish(PSTR("tempSensor"), ksf::to_string(tempC, 1));
 		}
 		else
 		{
