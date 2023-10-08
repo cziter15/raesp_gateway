@@ -104,7 +104,7 @@ namespace apps::raesp::comps
 				@param wifiLedWp Wifi LED component weak pointer.
 				@param radioLedWp Radio LED component weak pointer.
 			*/
-			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin,	ksLedWP wifiLedWp, ksLedWP radioLedWp);
+			RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin,	ksLedWP& wifiLedWp, ksLedWP& radioLedWp);
 
 			/*
 				Post initializes RadioCommander component.
