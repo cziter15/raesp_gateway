@@ -116,10 +116,10 @@ namespace apps::raesp::comps
 
 			/* 
 				Handles RadioCommander logic.
-
+				@param app Application object.
 				@return True on success, false on fail.
 			*/
-			bool loop() override;
+			bool loop(ksf::ksApplication* app) override;
 
 			/* 
 				Stops all TX. Will clear radio command queue.

@@ -33,9 +33,9 @@ namespace apps::raesp::comps
 		protocols::proto_prepare_txpin(dio2pin);
 	}
 
-	bool RadioCommander::postInit(ksf::ksApplication* owner)
+	bool RadioCommander::postInit(ksf::ksApplication* app)
 	{
-		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
+		mqttConnWp = app->findComponent<ksf::comps::ksMqttConnector>();
 
 		if (auto mqttConnSp{mqttConnWp.lock()})
 		{
@@ -159,7 +159,7 @@ namespace apps::raesp::comps
 		command.repeats--;
 	}
 
-	bool RadioCommander::loop()
+	bool RadioCommander::loop(ksf::ksApplication* app)
 	{
 		if (!commandQueue.empty())
 		{

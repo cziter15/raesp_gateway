@@ -22,7 +22,7 @@ namespace apps::config
 		addComponent<ksf::comps::ksLed>(CFG_STATUS_LED);
 		addComponent<ksf::comps::ksLed>(CFG_RADIO_LED);
 
-		return ksApplication::init();
+		return true;
 	}
 
 	bool RaespDeviceConfig::loop()

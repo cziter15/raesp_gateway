@@ -21,8 +21,6 @@ namespace apps::raesp::comps
 		KSF_RTTI_DECLARATIONS(TempSensor, ksf::ksComponent)
 		
 		protected:
-			ksf::ksApplication* owner{nullptr};								// Parent application pointer.
-
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;			// Weak pointer to mqtt connector.
 			std::unique_ptr<DS18B20> ds18handler;							// Temp sensor handle ptr.
 
@@ -74,14 +72,14 @@ namespace apps::raesp::comps
 				@param owner Pointer to owning application.
 				@return True on success, false on fail.
 			*/
-			bool init(ksf::ksApplication* owner) override;
+			bool init(ksf::ksApplication* app) override;
 
-			/* 
+			/*
 				Handles TempSensor logic.
-
+				@param app Pointer to owning application.
 				@return True on success, false on fail.
 			*/
-			bool loop() override;
+			bool loop(ksf::ksApplication* app) override;
 
 			/*
 				Destructor to free up resources.

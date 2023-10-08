@@ -45,10 +45,6 @@ namespace apps::raesp
 		/* Create RadioCommander component. */
 		radioCommanderWp = addComponent<comps::RadioCommander>(CFG_NSS_PIN, CFG_DIO0_PIN, CFG_RST_PIN, CFG_DIO2_PIN, wifiLedWp, radioLedWp);
 
-		/* Try to initialize superclass. It will initialize our components and tcpip (due to WiFi component). */
-		if (!ksApplication::init())
-			return false;
-
 		/* Bind to MQTT callbacks. */
 		if (auto mqttConnSp{mqttConnWp.lock()})
 		{

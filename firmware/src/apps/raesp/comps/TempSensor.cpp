@@ -20,10 +20,9 @@ namespace apps::raesp::comps
 		: dataPin(dataPin), enabPin(enabPin), resolution(resolution), measurementTimer(tempUpdateInterval)
 	{}
 
-	bool TempSensor::init(ksf::ksApplication* owner)
+	bool TempSensor::init(ksf::ksApplication* app)
 	{
-		this->owner = owner;
-		mqttConnWp = owner->findComponent<ksf::comps::ksMqttConnector>();
+		mqttConnWp = app->findComponent<ksf::comps::ksMqttConnector>();
 		return true;
 	}
 
@@ -71,7 +70,7 @@ namespace apps::raesp::comps
 		else
 		{
 			/* Queue ourselves for removal. */
-			owner->markComponentToRemove(shared_from_this());
+			componentState = ksf::ksComponentState::ToBeRemoved;
 		}
 
 		/* Disable power for the sensor. */
@@ -95,7 +94,7 @@ namespace apps::raesp::comps
 		GPEC = cachedGPEC;				// GPEC registry.
 	}
 
-	bool TempSensor::loop()
+	bool TempSensor::loop(ksf::ksApplication* app)
 	{
 		if (measurementTimer.triggered())
 			if (auto mqttConnSp{mqttConnWp.lock()})
