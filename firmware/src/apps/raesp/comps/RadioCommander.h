@@ -43,6 +43,7 @@ namespace apps::raesp::comps
 		using ksLedWP = std::weak_ptr<ksf::comps::ksLed>;
 
 		protected:
+			ksf::ksApplication* app{nullptr};													// Application ptr.
 
 			static constexpr uint16_t MAX_TX_QUEUE_SIZE{20};									// Maximum queue size for RC requests.
 			static constexpr int16_t RC_UNIT_NONE{-1};											// Value indicating no unit presence.
@@ -54,7 +55,7 @@ namespace apps::raesp::comps
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;								// Weak pointer to mqtt connector.
 			std::weak_ptr<ksf::comps::ksLed> radioLedWp, wifiLedWp;								// Weak pointers to LEDs.
 
-			const std::string rfTopicPrefix{"rfswitch/"};										// RF command topic prefix.
+			const std::string rfTopicPrefix;													// RF command topic prefix.
 			std::unique_ptr<ksf::evt::ksEventHandle> connEventHandleSp, msgEventHandleSp;		// Shared ptrs to events.
 
 			double cachedFrequency{0.0};														// Cached frequency value.
@@ -71,13 +72,6 @@ namespace apps::raesp::comps
 				Event handler method called when MQTT service connected to server. 
 			*/
 			void onMqttConnected();
-
-			/*
-				Wrapper function for publishin device log to specific MQTT topic.
-
-				@param info Message to publish.
-			*/
-			void sendMqttInfo(const std::string& info) const;
 
 			/*
 				This funciton will handle one repeat of RadioCommand and will block to drive data pin.

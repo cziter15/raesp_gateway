@@ -19,7 +19,7 @@ using namespace std::placeholders;
 namespace apps::raesp::comps
 {
 	RadioCommander::RadioCommander(uint8_t ssPin, uint8_t dio0pin, uint8_t rstPin, uint8_t dio2pin, ksLedWP& wifiLedWp, ksLedWP& radioLedWp)
-		: radioLedWp(radioLedWp), wifiLedWp(wifiLedWp)
+		: radioLedWp(radioLedWp), wifiLedWp(wifiLedWp), rfTopicPrefix(PSTR("rfswitch/"))
 	{
 		/* Instantiate radio PHY/Module. */
 		radioPhy = std::make_unique<Module>(ssPin, dio0pin, rstPin, dio2pin);
@@ -35,6 +35,7 @@ namespace apps::raesp::comps
 
 	bool RadioCommander::postInit(ksf::ksApplication* app)
 	{
+		this->app = app;
 		mqttConnWp = app->findComponent<ksf::comps::ksMqttConnector>();
 
 		if (auto mqttConnSp{mqttConnWp.lock()})
@@ -50,12 +51,6 @@ namespace apps::raesp::comps
 	{
 		if (auto mqttConnSp{mqttConnWp.lock()})
 			mqttConnSp->subscribe(rfTopicPrefix + '#');
-	}
-
-	void RadioCommander::sendMqttInfo(const std::string& info) const
-	{
-		if (auto mqttConnSp{mqttConnWp.lock()})
-			mqttConnSp->publish(PSTR("log"), info);
 	}
 
 	void RadioCommander::onMqttDevMessage(const std::string_view& topic, const std::string_view& payload)
@@ -75,8 +70,12 @@ namespace apps::raesp::comps
 				if (!wifiLedSp->isBlinking())
 					wifiLedSp->setBlinking(100, 5);
 
-			/* ... and tell MQTT via log channel about that. */
-			sendMqttInfo(PSTR("RadioCmd: Queue is full - discarding!"));
+			/* ... and send log about that. */
+#if APP_LOG_ENABLED
+			app->log([](std::string& out){
+				out += PSTR("RadioCmd: Queue is full - discarding!");
+			});
+#endif
 			return;
 		}
 
@@ -173,12 +172,17 @@ namespace apps::raesp::comps
 			/* Check if it's last repeat. */
 			if (currentCommand.repeats <= 0)
 			{
-				sendMqttInfo(
-					PSTR("RadioCmd: Sent! [ A: ") + ksf::to_string(currentCommand.address) + 
-					PSTR(" | U: ") + ksf::to_string(currentCommand.unit) + 
-					PSTR(" | V: ") + ksf::to_string(currentCommand.enable) + PSTR(" ]")
-				);
-
+#if APP_LOG_ENABLED
+				app->log([&](std::string& out){
+					out += PSTR("RadioCmd: Sent! [ A: ");
+					out += ksf::to_string(currentCommand.address);
+					out += PSTR(" | U: ");
+					out += ksf::to_string(currentCommand.unit);
+					out += PSTR(" | V: ");
+					out += ksf::to_string(currentCommand.enable);
+					out += PSTR(" ]");
+				});
+#endif
 				/* Pop current request (remove) from queue, coz we are done with it. */
 				commandQueue.pop();
 				
