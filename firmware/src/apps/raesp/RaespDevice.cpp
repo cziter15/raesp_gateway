@@ -24,7 +24,6 @@ namespace apps::raesp
 	{
 		/* Create required components (Wifi and Mqtt debug). */
 		addComponent<ksf::comps::ksWifiConnector>(config::RaespDeviceConfig::RaespDeviceName);
-		addComponent<ksf::comps::ksMqttDebugResponder>();
 		addComponent<ksf::comps::ksDevStatMqttReporter>();
 
 		/* Create OTA component. */
