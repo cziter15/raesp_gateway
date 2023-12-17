@@ -142,18 +142,20 @@ namespace apps::raesp::comps
 	{
 		int8_t ledPin{-1};
 
-		uint8_t newPower{MAX_TX_POWER};
+		/* Calculate new power level. */
+		uint8_t powerToSet{MAX_TX_POWER};
 		if (command.repeats != command.totRepeats)
 		{
-			double powerPercentage = command.repeats / static_cast<double>(command.totRepeats);
-			uint8_t newTxPower = static_cast<uint8_t>(MAX_TX_POWER * powerPercentage);
-			newTxPower = std::clamp(newTxPower, MIN_TX_POWER, MAX_TX_POWER);
+			auto powerPercentage{command.repeats / static_cast<double>(command.totRepeats)};
+			auto newPowerCalculated{static_cast<uint8_t>(MAX_TX_POWER * powerPercentage)};
+			powerToSet = std::clamp(newPowerCalculated, MIN_TX_POWER, MAX_TX_POWER);
 		}
 
-		if (cachedPower != newPower)
+		/* Set power level only if it has changed. */
+		if (cachedPower != powerToSet)
 		{
-			cachedPower = newPower;
 			radioModule->setOutputPower(cachedPower);
+			cachedPower = powerToSet;
 		}
 
 		if (auto radioLedSp{radioLedWp.lock()})
