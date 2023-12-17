@@ -142,6 +142,20 @@ namespace apps::raesp::comps
 	{
 		int8_t ledPin{-1};
 
+		uint8_t newPower{MAX_TX_POWER};
+		if (command.repeats != command.totRepeats)
+		{
+			double powerPercentage = command.repeats / static_cast<double>(command.totRepeats);
+			uint8_t newTxPower = static_cast<uint8_t>(MAX_TX_POWER * powerPercentage);
+			newTxPower = std::clamp(newTxPower, MIN_TX_POWER, MAX_TX_POWER);
+		}
+
+		if (cachedPower != newPower)
+		{
+			cachedPower = newPower;
+			radioModule->setOutputPower(cachedPower);
+		}
+
 		if (auto radioLedSp{radioLedWp.lock()})
 			ledPin = radioLedSp->getPin();
 	
@@ -188,7 +202,10 @@ namespace apps::raesp::comps
 				
 				/* If command queue is empty now, then call standby to get out of tx mode. */
 				if (commandQueue.empty())
+				{
+					cachedPower = 0;
 					radioModule->standby();
+				}
 			}
 		}
 
