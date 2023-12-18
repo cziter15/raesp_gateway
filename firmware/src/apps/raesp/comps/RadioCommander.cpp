@@ -27,7 +27,7 @@ namespace apps::raesp::comps
 
 		/* Setup radio module. */
 		cachedFrequency = TRANSMIT_FREQ_NEXA;
-		radioModule->beginFSK(cachedFrequency, 4.8, 5.0, 125.0, TRANSMIT_POWER_DBM, 8, true);
+		radioModule->beginFSK(cachedFrequency, 4.8F, 5.0F, 125.0, TRANSMIT_POWER_DBM, 0, true);
 
 		/* Setup radio TX pin. */
 		protocols::proto_prepare_txpin(dio2pin);
