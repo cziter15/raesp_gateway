@@ -108,7 +108,7 @@ namespace apps::raesp::comps
 		}
 
 		/* 
-			If command queue is empty, thr module is in IDLE state.
+			If command queue is empty, the module is in IDLE state.
 			We should set radio module to transmit mode and queue new request to send over air.
 			Otherwise, we should have already transmit mode selected, so only queue in that case.
 		*/
@@ -141,22 +141,6 @@ namespace apps::raesp::comps
 	void RadioCommander::processRadioCommand(RadioCommand &command)
 	{
 		int8_t ledPin{-1};
-
-		/* Calculate new power level. */
-		uint8_t powerToSet{MAX_TX_POWER};
-		if (command.repeats != command.totRepeats)
-		{
-			auto powerPercentage{command.repeats / static_cast<double>(command.totRepeats)};
-			auto newPowerCalculated{static_cast<uint8_t>(MAX_TX_POWER * powerPercentage)};
-			powerToSet = std::clamp(newPowerCalculated, MIN_TX_POWER, MAX_TX_POWER);
-		}
-
-		/* Set power level only if it has changed. */
-		if (cachedPower != powerToSet)
-		{
-			radioModule->setOutputPower(cachedPower);
-			cachedPower = powerToSet;
-		}
 
 		if (auto radioLedSp{radioLedWp.lock()})
 			ledPin = radioLedSp->getPin();
@@ -204,10 +188,7 @@ namespace apps::raesp::comps
 				
 				/* If command queue is empty now, then call standby to get out of tx mode. */
 				if (commandQueue.empty())
-				{
-					cachedPower = 0;
 					radioModule->standby();
-				}
 			}
 		}
 

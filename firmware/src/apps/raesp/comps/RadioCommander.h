@@ -23,7 +23,6 @@ namespace apps::raesp::comps
 		uint32_t address; 		// RF address.
 		int16_t unit;			// RF unit.
 		uint8_t repeats;		// Number of repeats.
-		uint8_t totRepeats;		// Number of total repeats.
 
 		/*
 			Constructor of RadioCommand.
@@ -34,7 +33,7 @@ namespace apps::raesp::comps
 			@param repeats Number of repeats.
 		*/
 		RadioCommand(bool enable, uint32_t address, int16_t unit, uint8_t repeats) :
-			enable(enable), address(address), unit(unit), repeats(repeats), totRepeats(repeats) {}
+			enable(enable), address(address), unit(unit), repeats(repeats) {}
 	};
 
 	class RadioCommander : public ksf::ksComponent
@@ -46,9 +45,6 @@ namespace apps::raesp::comps
 		protected:
 			ksf::ksApplication* app{nullptr};													// Application ptr.
 
-			static constexpr uint8_t MAX_TX_POWER{15};											// max TX power
-			static constexpr uint8_t MIN_TX_POWER{2};											// min TX power
-			
 			static constexpr uint16_t MAX_TX_QUEUE_SIZE{20};									// Maximum queue size for RC requests.
 			static constexpr int16_t RC_UNIT_NONE{-1};											// Value indicating no unit presence.
 
@@ -63,7 +59,6 @@ namespace apps::raesp::comps
 			std::unique_ptr<ksf::evt::ksEventHandle> connEventHandleSp, msgEventHandleSp;		// Shared ptrs to events.
 
 			double cachedFrequency{0.0};														// Cached frequency value.
-			uint8_t cachedPower{15};															// Cached power value.
 
 			/*
 				Event handler method called when MQTT service receives a message.
