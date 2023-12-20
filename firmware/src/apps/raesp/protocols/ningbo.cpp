@@ -20,8 +20,8 @@ namespace apps::raesp::protocols
 {
 	void tx_ningbo_bit(const proto_pins& pins, const char bitChar)
 	{
-		bool isBitCharOne = bitChar == '1';
-		if (bitChar == '0' || isBitCharOne)
+		
+		if (bool isBitCharOne{bitChar == '1'}; bitChar == '0' || isBitCharOne)
 		{
 			proto_high_for(pins,PULSE_SHORT_A);
 			proto_low_for(pins, PULSE_LONG_B);

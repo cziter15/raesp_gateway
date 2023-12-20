@@ -85,12 +85,10 @@ namespace apps::raesp::comps
 			Topics like OOK/1234/16 will be handled by nexa protocol.
 			Topics like OOK/1 will be handled by ningbo protocol.
 		*/
-		auto delim_idx{topic.find('/', rfTopicPrefix.length() + 1)};
-
 		uint32_t address{0};
 		int16_t unit{RC_UNIT_NONE};
 		
-		if (delim_idx != std::string_view::npos)
+		if (auto delim_idx{topic.find('/', rfTopicPrefix.length() + 1)}; delim_idx != std::string_view::npos)
 		{
 			auto address_sv{topic.substr(rfTopicPrefix.length(), delim_idx - rfTopicPrefix.length())};
 			if (!ksf::from_chars(address_sv, address))
