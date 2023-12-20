@@ -10,7 +10,7 @@
 #include "Arduino.h"
 #include "nexa.h"
 
-#define PULSE_TIME 296
+#define PULSE_TIME 260
 
 namespace apps::raesp::protocols
 {
