@@ -12,7 +12,7 @@
 #include "../../../board.h"
 
 namespace apps::raesp::protocols
-	{
+{
 	static inline volatile uint32_t asm_ccount(void) 
 	{
 		uint32_t r;
@@ -22,7 +22,7 @@ namespace apps::raesp::protocols
 
 	void IRAM_ATTR delayTicks(int32_t ticks) 
 	{
-		uint32_t  expire_ticks = asm_ccount() + ticks -13;
+		uint32_t expire_ticks {asm_ccount() + ticks -13};
 
 		do 
 			ticks = expire_ticks - asm_ccount();
@@ -35,7 +35,7 @@ namespace apps::raesp::protocols
 			"beqi %0, 3 , 0f;"
 			"beqi %0, 4 , 0f;"
 			"bgei %0, 5 , 0f;"
-			"0:          ;" : : "r"(ticks)
+			"0:;" : : "r"(ticks)
 		);
 	}
 
