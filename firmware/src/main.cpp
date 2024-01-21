@@ -12,8 +12,9 @@
 
 using namespace apps;
 
-KSF_IMPLEMENT_APP_ROTATOR
+KSF_IMPLEMENT_APP_ROTATOR_INTERVAL
 (
+	10,
 	raesp::RaespDevice,
 	config::RaespDeviceConfig
 )
