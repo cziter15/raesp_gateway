@@ -23,7 +23,7 @@
 #define CFG_DIO2_PIN 4
 
 /* Transmit power to set on Ra-02 module. */
-#define TRANSMIT_POWER_DBM 15
+#define TRANSMIT_POWER_DBM 10
 /* Transmit frequency to set on Ra-02 module for NEXA protocol. */
 #define TRANSMIT_FREQ_NEXA 433.927
 /* Transmit frequency to set on Ra-02 module for NINGBO protocol. */
