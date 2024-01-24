@@ -28,6 +28,7 @@ namespace apps::raesp::comps
 		/* Setup radio module. */
 		cachedFrequency = TRANSMIT_FREQ_NEXA;
 		radioModule->beginFSK(cachedFrequency, 4.8F, 5.0F, 125.0, TRANSMIT_POWER_DBM, 0, true);
+		radioModule->setDirectSyncWord(0,0);
 
 		/* Setup radio TX pin. */
 		protocols::proto_prepare_txpin(dio2pin);
@@ -111,7 +112,10 @@ namespace apps::raesp::comps
 			Otherwise, we should have already transmit mode selected, so only queue in that case.
 		*/
 		if (commandQueue.empty())
+		{
+			GPOC = (1 << radioPhy->getGpio());
 			radioModule->transmitDirect();
+		}
 
 		/* Push address/unit to command queue. */
 		commandQueue.emplace(payload[0] == '1', address, unit, (uint8_t)(unit > 0 ? 6 : 9));
@@ -148,10 +152,15 @@ namespace apps::raesp::comps
 
 		/* Here we decide if we use ningbo protocol or nexa protocol. */
 		if (command.unit == RC_UNIT_NONE)
+		{
+			changeFrequency(TRANSMIT_FREQ_NINGBO);
 			protocols::tx_ningbo_switch({radioPin, ledPin}, command.enable, command.address);
+		}
 		else
+		{
+			changeFrequency(TRANSMIT_FREQ_NEXA);
 			protocols::tx_nexa_switch({radioPin, ledPin}, command.enable, command.address, command.unit);
-
+		}
 		/* Decrement repeats countdown. */
 		command.repeats--;
 	}
