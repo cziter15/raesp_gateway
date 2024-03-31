@@ -16,7 +16,7 @@ namespace apps::config
 
 	bool RaespDeviceConfig::init()
 	{
-		addComponent<ksf::comps::ksWiFiConfigurator>(RaespDeviceName);
+		addComponent<ksf::comps::ksWifiConfigurator>(RaespDeviceName);
 		addComponent<ksf::comps::ksMqttConfigProvider>();
 
 		addComponent<ksf::comps::ksLed>(CFG_STATUS_LED);
