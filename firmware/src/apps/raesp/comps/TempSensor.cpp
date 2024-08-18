@@ -70,7 +70,7 @@ namespace apps::raesp::comps
 		else
 		{
 			/* Queue ourselves for removal. */
-			componentState = ksf::ksComponentState::ToBeRemoved;
+			componentState = ksf::ksComponentState::ToRemove;
 		}
 
 		/* Disable power for the sensor. */
