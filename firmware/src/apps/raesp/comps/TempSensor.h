@@ -28,7 +28,7 @@ namespace apps::raesp::comps
 			std::optional<uint8_t> enabPin;									// Temp sensor emable pin.
 			std::optional<uint8_t> resolution;								// Requested resolution.
 
-			ksf::ksSimpleTimer measurementTimer;							// Measurement timer (to measure temp at specified interval).
+			ksf::misc::ksSimpleTimer measurementTimer;							// Measurement timer (to measure temp at specified interval).
 
 			/*
 				Event handler method called when MQTT service connected to server. 
