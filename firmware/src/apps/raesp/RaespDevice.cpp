@@ -59,10 +59,6 @@ namespace apps::raesp
 		if (auto wifiLedSp{wifiLedWp.lock()})
 			wifiLedSp->setBlinking(500);
 
-		/* Disable GPIO2 for now (LED) */
-		pinMode(2, OUTPUT);
-		digitalWrite(2, HIGH);
-
 		/* Application finished initialization, return true as it succedeed. */
 		return true;
 	}
