@@ -19,7 +19,7 @@ To build my PCB, I kept the component count minimal—just a few capacitors, res
 ## Software overview
 ![image](https://user-images.githubusercontent.com/5003708/206722786-588b524b-16be-46a2-966f-ce0bff59ec86.png)
 
-The software is C++-based and powered by ksIotFrameworkLib. It currently supports MQTT and implements the following protocols:
+The software is C++ based and powered by [ksIotFrameworkLib](https://github.com/cziter15/ksIotFrameworkLib). It currently supports MQTT and implements the following protocols:
 
 - Ningbo RF protocol
 - Nexa RF protocol
