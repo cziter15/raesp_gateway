@@ -29,12 +29,6 @@ namespace apps::raesp::comps
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
 		/* 
-			Skip measurement if MQTT is not connected - no point measuring if we can't publish.
-		*/
-		if (!mqttConnSp->isConnected())
-			return;
-
-		/* 
 			Skip measurement if LED pin (enabPin) is initially HIGH.
 			When the LED is active (HIGH), it means other components are using it,
 			so we shouldn't interfere. Use GPIO registers to check pin state.
@@ -106,7 +100,9 @@ namespace apps::raesp::comps
 	{
 		if (measurementTimer.triggered())
 			if (auto mqttConnSp{mqttConnWp.lock()})
-				measureAndPublish(mqttConnSp);
+				/* Skip measurement if MQTT is not connected - no point measuring if we can't publish. */
+				if (mqttConnSp->isConnected())
+					measureAndPublish(mqttConnSp);
 
 		return true;
 	}
