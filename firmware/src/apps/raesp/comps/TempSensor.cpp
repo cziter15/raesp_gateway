@@ -24,35 +24,17 @@ namespace apps::raesp::comps
 	bool TempSensor::init(ksf::ksApplication* app)
 	{
 		mqttConnWp = app->findComponent<ksf::comps::ksMqttConnector>();
-		
-		/* Find LED components that share pins with the sensor. */
-		for (auto& ledComponent : app->findComponents<ksf::comps::ksLed>())
-		{
-			if (auto ledSp = ledComponent.lock())
-			{
-				/* Check if this LED uses the data pin. */
-				if (ledSp->getPin() == dataPin)
-					dataLedWp = ledComponent;
-				
-				/* Check if this LED uses the enable pin. */
-				if (enabPin.has_value() && ledSp->getPin() == *enabPin)
-					enabLedWp = ledComponent;
-			}
-		}
-		
 		return true;
 	}
 
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
-		/* Check if any LED sharing pins with the sensor is currently blinking. */
-		if (auto dataLedSp = dataLedWp.lock())
-			if (dataLedSp->isBlinking())
-				return;	// Skip measurement to avoid conflict.
+		/* Check if any pin that will be used is currently HIGH (LED active). */
+		if (digitalRead(dataPin) == HIGH)
+			return;	// Skip measurement to avoid conflict with LED.
 		
-		if (auto enabLedSp = enabLedWp.lock())
-			if (enabLedSp->isBlinking())
-				return;	// Skip measurement to avoid conflict.
+		if (enabPin.has_value() && digitalRead(*enabPin) == HIGH)
+			return;	// Skip measurement to avoid conflict with LED.
 
 		/* Enable power for the sensor. */
 		if (enabPin.has_value())
