@@ -78,6 +78,11 @@ namespace apps::raesp::comps
 			
 			if (isValidReading)
 				mqttConnSp->publish(PSTR("tempSensor"), ksf::to_string(tempC, 1));
+			else
+			{
+				/* Invalid reading detected - reset handler to recover from potential pin conflicts. */
+				ds18handler.reset();
+			}
 		}
 		else
 		{
