@@ -29,7 +29,7 @@ namespace apps::raesp::comps
 			std::optional<uint8_t> resolution;								// Requested resolution.
 
 			ksf::misc::ksSimpleTimer measurementTimer;							// Measurement timer (to measure temp at specified interval).
-			bool mqttConnected{false};										// MQTT connection state flag.
+			volatile bool mqttConnected{false};								// MQTT connection state flag (volatile for thread safety).
 
 			std::unique_ptr<ksf::evt::ksEventHandle> connEventHandleSp;		// Handle to MQTT connected event.
 			std::unique_ptr<ksf::evt::ksEventHandle> disEventHandleSp;		// Handle to MQTT disconnected event.
