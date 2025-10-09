@@ -15,6 +15,9 @@ using namespace std::placeholders;
 namespace apps::raesp::comps
 {
 	#define TEMP_SENSOR_INVALID_TEMP 85.0f
+	#define TEMP_SENSOR_ERROR_TEMP -127.0f
+	#define TEMP_SENSOR_MIN_VALID -55.0f
+	#define TEMP_SENSOR_MAX_VALID 125.0f
 
 	TempSensor::TempSensor(uint8_t dataPin, uint32_t tempUpdateInterval, std::optional<uint8_t> resolution, std::optional<uint8_t> enabPin)
 		: dataPin(dataPin), enabPin(enabPin), resolution(resolution), measurementTimer(tempUpdateInterval)
@@ -64,7 +67,13 @@ namespace apps::raesp::comps
 		if (ds18handler && ds18handler->getNumberOfDevices() > 0)
 		{
 			auto tempC{ds18handler->getTempC()};
-			if (fabsf(TEMP_SENSOR_INVALID_TEMP - tempC) > std::numeric_limits<float>::epsilon())
+			
+			/* Validate temperature reading. Filter out known error values and out-of-range readings. */
+			bool isValidReading = (fabsf(TEMP_SENSOR_INVALID_TEMP - tempC) > std::numeric_limits<float>::epsilon()) &&
+								  (fabsf(TEMP_SENSOR_ERROR_TEMP - tempC) > std::numeric_limits<float>::epsilon()) &&
+								  (tempC >= TEMP_SENSOR_MIN_VALID && tempC <= TEMP_SENSOR_MAX_VALID);
+			
+			if (isValidReading)
 				mqttConnSp->publish(PSTR("tempSensor"), ksf::to_string(tempC, 1));
 		}
 		else
