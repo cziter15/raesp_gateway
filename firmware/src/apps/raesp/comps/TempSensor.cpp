@@ -53,6 +53,10 @@ namespace apps::raesp::comps
 			cachedEnabState = digitalRead(*enabPin);
 			pinMode(*enabPin, OUTPUT);
 			digitalWrite(*enabPin, HIGH);
+			
+			/* Wait for sensor power stabilization if handler not yet created. */
+			if (!ds18handler)
+				delay(1000);
 		}
 
 		/* Create DS18 handler. */
@@ -86,10 +90,6 @@ namespace apps::raesp::comps
 		if (enabPin.has_value())
 			digitalWrite(*enabPin, cachedEnabState);
 
-		/* Restore data pin state. */
-		pinMode(dataPin, OUTPUT);
-		digitalWrite(dataPin, cachedDataState);
-
 		/* Restore saved pin configuration (pin mode). */
 		if (enabPin.has_value())
 		{
@@ -101,6 +101,10 @@ namespace apps::raesp::comps
 		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
 
 		GPEC = cachedGPEC;				// GPEC registry.
+		
+		/* Restore data pin state after GPIO registers are set. */
+		pinMode(dataPin, OUTPUT);
+		digitalWrite(dataPin, cachedDataState);
 	}
 
 	bool TempSensor::loop(ksf::ksApplication* app)
