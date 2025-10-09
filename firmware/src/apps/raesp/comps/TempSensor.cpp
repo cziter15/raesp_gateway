@@ -23,7 +23,25 @@ namespace apps::raesp::comps
 	bool TempSensor::init(ksf::ksApplication* app)
 	{
 		mqttConnWp = app->findComponent<ksf::comps::ksMqttConnector>();
+		
+		/* Register MQTT event handlers to track connection state. */
+		if (auto mqttConnSp{mqttConnWp.lock()})
+		{
+			mqttConnSp->onConnected->registerEvent(connEventHandleSp, std::bind(&TempSensor::onMqttConnected, this));
+			mqttConnSp->onDisconnected->registerEvent(disEventHandleSp, std::bind(&TempSensor::onMqttDisconnected, this));
+		}
+
 		return true;
+	}
+
+	void TempSensor::onMqttConnected()
+	{
+		mqttConnected = true;
+	}
+
+	void TempSensor::onMqttDisconnected()
+	{
+		mqttConnected = false;
 	}
 
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
@@ -31,7 +49,7 @@ namespace apps::raesp::comps
 		/* 
 			Skip measurement if MQTT is not connected - no point measuring if we can't publish.
 		*/
-		if (!mqttConnSp->isConnected())
+		if (!mqttConnected)
 			return;
 
 		/* 
