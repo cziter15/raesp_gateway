@@ -90,9 +90,9 @@ namespace apps::raesp::comps
 			componentState = ksf::ksComponentState::ToRemove;
 		}
 
-		/* Disable power for the sensor. */
+		/* Disable power for the sensor - always set to LOW to ensure proper power cycle. */
 		if (enabPin.has_value())
-			digitalWrite(*enabPin, cachedEnabState);
+			digitalWrite(*enabPin, LOW);
 
 		/* Restore saved pin configuration (pin mode). */
 		if (enabPin.has_value())
