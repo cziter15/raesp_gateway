@@ -23,33 +23,44 @@ namespace apps::raesp::comps
 	bool TempSensor::init(ksf::ksApplication* app)
 	{
 		mqttConnWp = app->findComponent<ksf::comps::ksMqttConnector>();
+		
+		/* Find LED components that share pins with the sensor. */
+		for (auto& ledComponent : app->findComponents<ksf::comps::ksLed>())
+		{
+			if (auto ledSp = ledComponent.lock())
+			{
+				/* Check if this LED uses the data pin. */
+				if (ledSp->getPin() == dataPin)
+					dataLedWp = ledComponent;
+				
+				/* Check if this LED uses the enable pin. */
+				if (enabPin.has_value() && ledSp->getPin() == *enabPin)
+					enabLedWp = ledComponent;
+			}
+		}
+		
 		return true;
 	}
 
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
-		/* 
-			Well this is a bit tricky. Because we are sharing pins with LEDs, we need to cache Direction and LO/HI state.
-			Then, when we are done, we should restore pin state and modes so it will look it didn't happen from other components.
-		*/
-		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
-		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
-
-		auto cachedDataGPC{GPC(dataPin)};	// dataPin ctrl registry.
-		auto cachedDataGPF{GPF(dataPin)};	// dataPin func registry.
-
-		auto cachedGPEC{GPEC};				// GPEC registry.
-
-		/* Cache data pin state. */
-		auto cachedEnabState{LOW};
-		auto cachedDataState{digitalRead(dataPin)};
+		/* Check if any LED sharing pins with the sensor is currently blinking. */
+		if (auto dataLedSp = dataLedWp.lock())
+			if (dataLedSp->isBlinking())
+				return;	// Skip measurement to avoid conflict.
+		
+		if (auto enabLedSp = enabLedWp.lock())
+			if (enabLedSp->isBlinking())
+				return;	// Skip measurement to avoid conflict.
 
 		/* Enable power for the sensor. */
 		if (enabPin.has_value())
 		{
-			cachedEnabState = digitalRead(*enabPin);
 			pinMode(*enabPin, OUTPUT);
 			digitalWrite(*enabPin, HIGH);
+			
+			/* Delay to allow parasitic capacitor to charge (per DS18B20 specs). */
+			delay(2);
 		}
 
 		/* Create DS18 handler. */
@@ -73,25 +84,16 @@ namespace apps::raesp::comps
 			componentState = ksf::ksComponentState::ToRemove;
 		}
 
-		/* Disable power for the sensor. */
-		if (enabPin.has_value())
-			digitalWrite(*enabPin, cachedEnabState);
-
-		/* Restore data pin state. */
-		pinMode(dataPin, OUTPUT);
-		digitalWrite(dataPin, cachedDataState);
-
-		/* Restore saved pin configuration (pin mode). */
+		/* Disable power for the sensor and set pins to LOW. */
 		if (enabPin.has_value())
 		{
-			GPC(*enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
-			GPF(*enabPin) = cachedEnabGPF;	// enabPin func registry.
+			pinMode(*enabPin, OUTPUT);
+			digitalWrite(*enabPin, LOW);
 		}
 
-		GPC(dataPin) = cachedDataGPC;	// dataPin ctrl registry.
-		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
-
-		GPEC = cachedGPEC;				// GPEC registry.
+		/* Set data pin to LOW. */
+		pinMode(dataPin, OUTPUT);
+		digitalWrite(dataPin, LOW);
 	}
 
 	bool TempSensor::loop(ksf::ksApplication* app)

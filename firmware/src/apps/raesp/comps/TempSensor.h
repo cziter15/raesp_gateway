@@ -22,6 +22,8 @@ namespace apps::raesp::comps
 		
 		protected:
 			std::weak_ptr<ksf::comps::ksMqttConnector> mqttConnWp;			// Weak pointer to mqtt connector.
+			std::weak_ptr<ksf::comps::ksLed> dataLedWp;						// Weak pointer to data pin LED.
+			std::weak_ptr<ksf::comps::ksLed> enabLedWp;						// Weak pointer to enable pin LED.
 			std::unique_ptr<DS18B20> ds18handler;							// Temp sensor handle ptr.
 
 			uint8_t dataPin{0};												// Temp sensor data pin.
