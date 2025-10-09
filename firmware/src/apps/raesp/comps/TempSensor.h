@@ -31,11 +31,6 @@ namespace apps::raesp::comps
 			ksf::misc::ksSimpleTimer measurementTimer;							// Measurement timer (to measure temp at specified interval).
 
 			/*
-				Event handler method called when MQTT service connected to server. 
-			*/
-			void onMqttConnected();
-
-			/*
 				Event handler method called when MQTT service receives a message.
 
 				@param topic Reference of topic string_view.

@@ -29,27 +29,31 @@ namespace apps::raesp::comps
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
 		/* 
-			Well this is a bit tricky. Because we are sharing pins with LEDs, we need to cache Direction and LO/HI state.
-			Then, when we are done, we should restore pin state and modes so it will look it didn't happen from other components.
+			Skip measurement if LED pin (enabPin) is initially HIGH.
+			When the LED is active (HIGH), it means other components are using it,
+			so we shouldn't interfere. Use GPIO registers to check pin state.
+			Verify pin is configured as OUTPUT before checking state.
 		*/
-		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
-		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
-
-		auto cachedDataGPC{GPC(dataPin)};	// dataPin ctrl registry.
-		auto cachedDataGPF{GPF(dataPin)};	// dataPin func registry.
-
-		auto cachedGPEC{GPEC};				// GPEC registry.
-
-		/* Cache data pin state. */
-		auto cachedEnabState{LOW};
-		auto cachedDataState{digitalRead(dataPin)};
-
-		/* Enable power for the sensor. */
 		if (enabPin.has_value())
 		{
-			cachedEnabState = digitalRead(*enabPin);
+			uint8_t pinMask{(1 << *enabPin)};
+			bool isOutput{(GPOE & pinMask)};
+			if (isOutput && (GPO & pinMask))
+				return;
+		}
+
+		/* Cache GPIO registers for restoration. */
+		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
+		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
+		auto cachedDataGPC{GPC(dataPin)};								// dataPin ctrl registry.
+		auto cachedDataGPF{GPF(dataPin)};								// dataPin func registry.
+		auto cachedGPEC{GPEC};											// GPEC registry.
+
+		/* Enable power for the sensor using GPIO registers. */
+		if (enabPin.has_value())
+		{
 			pinMode(*enabPin, OUTPUT);
-			digitalWrite(*enabPin, HIGH);
+			GPOS = (1 << *enabPin);
 		}
 
 		/* Create DS18 handler. */
@@ -73,32 +77,28 @@ namespace apps::raesp::comps
 			componentState = ksf::ksComponentState::ToRemove;
 		}
 
-		/* Disable power for the sensor. */
+		/* Disable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
-			digitalWrite(*enabPin, cachedEnabState);
-
-		/* Restore data pin state. */
-		pinMode(dataPin, OUTPUT);
-		digitalWrite(dataPin, cachedDataState);
+			GPOC = (1 << *enabPin);
 
 		/* Restore saved pin configuration (pin mode). */
 		if (enabPin.has_value())
 		{
-			GPC(*enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
-			GPF(*enabPin) = cachedEnabGPF;	// enabPin func registry.
+			GPC(*enabPin) = cachedEnabGPC;
+			GPF(*enabPin) = cachedEnabGPF;
 		}
 
-		GPC(dataPin) = cachedDataGPC;	// dataPin ctrl registry.
-		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
-
-		GPEC = cachedGPEC;				// GPEC registry.
+		GPC(dataPin) = cachedDataGPC;
+		GPF(dataPin) = cachedDataGPF;
+		GPEC = cachedGPEC;
 	}
 
 	bool TempSensor::loop(ksf::ksApplication* app)
 	{
 		if (measurementTimer.triggered())
 			if (auto mqttConnSp{mqttConnWp.lock()})
-				measureAndPublish(mqttConnSp);
+				if (mqttConnSp->isConnected())
+					measureAndPublish(mqttConnSp);
 
 		return true;
 	}
