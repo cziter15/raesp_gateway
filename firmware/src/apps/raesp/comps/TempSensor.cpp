@@ -54,9 +54,8 @@ namespace apps::raesp::comps
 			pinMode(*enabPin, OUTPUT);
 			digitalWrite(*enabPin, HIGH);
 			
-			/* Wait for sensor power stabilization if handler not yet created. */
-			if (!ds18handler)
-				delay(1000);
+			/* Wait for parasitic power capacitor to charge. */
+			delay(50);
 		}
 
 		/* Create DS18 handler. */
