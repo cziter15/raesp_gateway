@@ -56,14 +56,13 @@ namespace apps::raesp::comps
 			Skip measurement if LED pin (enabPin) is initially HIGH.
 			When the LED is active (HIGH), it means other components are using it,
 			so we shouldn't interfere. Use GPIO registers to check pin state.
-			Also verify pin is configured as OUTPUT before checking state.
+			Verify pin is configured as OUTPUT before checking state.
 		*/
 		if (enabPin.has_value())
 		{
 			uint8_t pinMask = (1 << *enabPin);
-			uint32_t gpcValue = GPC(*enabPin);
-			bool isOutput = (gpcValue & 0x01);  // Bit 0 indicates output mode in GPC
-			if (isOutput && (GPO & pinMask))    // Check if OUTPUT and HIGH
+			bool isOutput = (GPOE & pinMask);  // GPOE bit indicates output enable
+			if (isOutput && (GPO & pinMask))   // Check if OUTPUT and HIGH
 				return;
 		}
 
