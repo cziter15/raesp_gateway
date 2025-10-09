@@ -29,9 +29,24 @@ namespace apps::raesp::comps
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
 		/* 
-			Well this is a bit tricky. Because we are sharing pins with LEDs, we need to cache Direction and LO/HI state.
-			Then, when we are done, we should restore pin state and modes so it will look it didn't happen from other components.
+			Skip measurement if MQTT is not connected - no point measuring if we can't publish.
 		*/
+		if (!mqttConnSp->isConnected())
+			return;
+
+		/* 
+			Skip measurement if LED pin (enabPin) is initially HIGH.
+			When the LED is active (HIGH), it means other components are using it,
+			so we shouldn't interfere. Use GPIO registers to check pin state.
+		*/
+		if (enabPin.has_value())
+		{
+			uint8_t pinMask = (1 << *enabPin);
+			if (GPO & pinMask)  // Check if output is HIGH
+				return;
+		}
+
+		/* Cache GPIO registers for restoration. */
 		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
 		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
 
@@ -40,16 +55,11 @@ namespace apps::raesp::comps
 
 		auto cachedGPEC{GPEC};				// GPEC registry.
 
-		/* Cache data pin state. */
-		auto cachedEnabState{LOW};
-		auto cachedDataState{digitalRead(dataPin)};
-
-		/* Enable power for the sensor. */
+		/* Enable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
 		{
-			cachedEnabState = digitalRead(*enabPin);
 			pinMode(*enabPin, OUTPUT);
-			digitalWrite(*enabPin, HIGH);
+			GPOS = (1 << *enabPin);  // Set pin HIGH using register
 		}
 
 		/* Create DS18 handler. */
@@ -73,13 +83,9 @@ namespace apps::raesp::comps
 			componentState = ksf::ksComponentState::ToRemove;
 		}
 
-		/* Disable power for the sensor. */
+		/* Disable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
-			digitalWrite(*enabPin, cachedEnabState);
-
-		/* Restore data pin state. */
-		pinMode(dataPin, OUTPUT);
-		digitalWrite(dataPin, cachedDataState);
+			GPOC = (1 << *enabPin);  // Set pin LOW using register
 
 		/* Restore saved pin configuration (pin mode). */
 		if (enabPin.has_value())
