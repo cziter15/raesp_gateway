@@ -15,6 +15,7 @@ using namespace std::placeholders;
 namespace apps::raesp::comps
 {
 	#define TEMP_SENSOR_INVALID_TEMP 85.0f
+	#define PARASITIC_CAPACITOR_CHARGE_DELAY_MS 2
 
 	TempSensor::TempSensor(uint8_t dataPin, uint32_t tempUpdateInterval, std::optional<uint8_t> resolution, std::optional<uint8_t> enabPin)
 		: dataPin(dataPin), enabPin(enabPin), resolution(resolution), measurementTimer(tempUpdateInterval)
@@ -60,7 +61,7 @@ namespace apps::raesp::comps
 			digitalWrite(*enabPin, HIGH);
 			
 			/* Delay to allow parasitic capacitor to charge (per DS18B20 specs). */
-			delay(2);
+			delay(PARASITIC_CAPACITOR_CHARGE_DELAY_MS);
 		}
 
 		/* Create DS18 handler. */
