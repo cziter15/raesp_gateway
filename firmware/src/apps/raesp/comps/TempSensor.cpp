@@ -31,28 +31,14 @@ namespace apps::raesp::comps
 
 	void TempSensor::measureAndPublish(const std::shared_ptr<ksf::comps::ksMqttConnector>& mqttConnSp)
 	{
-		/* 
-			Well this is a bit tricky. Because we are sharing pins with LEDs, we need to cache Direction and LO/HI state.
-			Then, when we are done, we should restore pin state and modes so it will look it didn't happen from other components.
-		*/
-		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
-		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
+		/* Check if power pin is already HIGH (LED is on). Skip measurement to avoid conflicts. */
+		if (enabPin.has_value() && (GPI & (1 << *enabPin)))
+			return;
 
-		auto cachedDataGPC{GPC(dataPin)};	// dataPin ctrl registry.
-		auto cachedDataGPF{GPF(dataPin)};	// dataPin func registry.
-
-		auto cachedGPEC{GPEC};				// GPEC registry.
-
-		/* Cache data pin state. */
-		auto cachedEnabState{LOW};
-		auto cachedDataState{digitalRead(dataPin)};
-
-		/* Enable power for the sensor. */
+		/* Enable power for the sensor using register operations. */
 		if (enabPin.has_value())
 		{
-			cachedEnabState = digitalRead(*enabPin);
-			pinMode(*enabPin, OUTPUT);
-			digitalWrite(*enabPin, HIGH);
+			GPOS = (1 << *enabPin);	// Set pin HIGH.
 			
 			/* Wait for parasitic power capacitor to charge. */
 			delay(50);
@@ -90,25 +76,9 @@ namespace apps::raesp::comps
 			componentState = ksf::ksComponentState::ToRemove;
 		}
 
-		/* Disable power for the sensor - always set to LOW to ensure proper power cycle. */
+		/* Disable power for the sensor using register operations. */
 		if (enabPin.has_value())
-			digitalWrite(*enabPin, LOW);
-
-		/* Restore saved pin configuration (pin mode). */
-		if (enabPin.has_value())
-		{
-			GPC(*enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
-			GPF(*enabPin) = cachedEnabGPF;	// enabPin func registry.
-		}
-
-		GPC(dataPin) = cachedDataGPC;	// dataPin ctrl registry.
-		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
-
-		GPEC = cachedGPEC;				// GPEC registry.
-		
-		/* Restore data pin state after GPIO registers are set. */
-		pinMode(dataPin, OUTPUT);
-		digitalWrite(dataPin, cachedDataState);
+			GPOC = (1 << *enabPin);	// Set pin LOW.
 	}
 
 	bool TempSensor::loop(ksf::ksApplication* app)
