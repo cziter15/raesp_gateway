@@ -42,14 +42,14 @@ namespace apps::raesp::comps
 			if (isOutput && (GPIO_REG_READ(GPIO_IN_ADDRESS) & pinMask))
 				return;
 		}
-		
+
 		/* Cache GPIO registers for restoration. */
 		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
 		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
 		auto cachedDataGPC{GPC(dataPin)};								// dataPin ctrl registry.
 		auto cachedDataGPF{GPF(dataPin)};								// dataPin func registry.
 		auto cachedGPEC{GPEC};											// GPEC registry.
-		
+
 		/* Enable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
 		{
@@ -60,7 +60,7 @@ namespace apps::raesp::comps
 			GPIO_REG_WRITE(GPIO_ENABLE_W1TS_ADDRESS, pinMask);			// Set pin as output
 			GPIO_REG_WRITE(GPIO_OUT_W1TS_ADDRESS, pinMask);				// Set pin HIGH
 		}
-		
+
 		/* Create DS18 handler. */
 		if (!ds18handler)
 		{
@@ -68,7 +68,7 @@ namespace apps::raesp::comps
 			if (ds18handler && resolution.has_value()) 
 				ds18handler->setResolution(*resolution);
 		}
-		
+
 		/* Handle temperature measurement. */
 		if (ds18handler && ds18handler->getNumberOfDevices() > 0)
 		{
@@ -81,14 +81,14 @@ namespace apps::raesp::comps
 			/* Queue ourselves for removal. */
 			componentState = ksf::ksComponentState::ToRemove;
 		}
-		
+
 		/* Disable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
 		{
 			uint32_t pinMask{1U << *enabPin};
 			GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, pinMask);
 		}
-		
+
 		/* Restore saved pin configuration (pin mode). */
 		if (enabPin.has_value())
 		{
