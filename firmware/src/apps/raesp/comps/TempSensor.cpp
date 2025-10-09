@@ -36,26 +36,24 @@ namespace apps::raesp::comps
 		*/
 		if (enabPin.has_value())
 		{
-			uint8_t pinMask = (1 << *enabPin);
-			bool isOutput = (GPOE & pinMask);  // GPOE bit indicates output enable
-			if (isOutput && (GPO & pinMask))   // Check if OUTPUT and HIGH
+			uint8_t pinMask{(1 << *enabPin)};
+			bool isOutput{(GPOE & pinMask)};
+			if (isOutput && (GPO & pinMask))
 				return;
 		}
 
 		/* Cache GPIO registers for restoration. */
 		auto cachedEnabGPC{enabPin.has_value() ? GPC(*enabPin) : 0};	// enabPin ctrl registry.
 		auto cachedEnabGPF{enabPin.has_value() ? GPF(*enabPin) : 0};	// enabPin func registry.
-
-		auto cachedDataGPC{GPC(dataPin)};	// dataPin ctrl registry.
-		auto cachedDataGPF{GPF(dataPin)};	// dataPin func registry.
-
-		auto cachedGPEC{GPEC};				// GPEC registry.
+		auto cachedDataGPC{GPC(dataPin)};								// dataPin ctrl registry.
+		auto cachedDataGPF{GPF(dataPin)};								// dataPin func registry.
+		auto cachedGPEC{GPEC};											// GPEC registry.
 
 		/* Enable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
 		{
 			pinMode(*enabPin, OUTPUT);
-			GPOS = (1 << *enabPin);  // Set pin HIGH using register
+			GPOS = (1 << *enabPin);
 		}
 
 		/* Create DS18 handler. */
@@ -81,26 +79,24 @@ namespace apps::raesp::comps
 
 		/* Disable power for the sensor using GPIO registers. */
 		if (enabPin.has_value())
-			GPOC = (1 << *enabPin);  // Set pin LOW using register
+			GPOC = (1 << *enabPin);
 
 		/* Restore saved pin configuration (pin mode). */
 		if (enabPin.has_value())
 		{
-			GPC(*enabPin) = cachedEnabGPC;	// enabPin ctrl registry.
-			GPF(*enabPin) = cachedEnabGPF;	// enabPin func registry.
+			GPC(*enabPin) = cachedEnabGPC;
+			GPF(*enabPin) = cachedEnabGPF;
 		}
 
-		GPC(dataPin) = cachedDataGPC;	// dataPin ctrl registry.
-		GPF(dataPin) = cachedDataGPF;	// dataPin func registry.
-
-		GPEC = cachedGPEC;				// GPEC registry.
+		GPC(dataPin) = cachedDataGPC;
+		GPF(dataPin) = cachedDataGPF;
+		GPEC = cachedGPEC;
 	}
 
 	bool TempSensor::loop(ksf::ksApplication* app)
 	{
 		if (measurementTimer.triggered())
 			if (auto mqttConnSp{mqttConnWp.lock()})
-				/* Skip measurement if MQTT is not connected - no point measuring if we can't publish. */
 				if (mqttConnSp->isConnected())
 					measureAndPublish(mqttConnSp);
 
