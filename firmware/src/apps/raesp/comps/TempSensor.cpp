@@ -100,7 +100,7 @@ namespace apps::raesp::comps
 		GPEC = cachedGPEC;
 	}
 
-	bool TempSensor::loop(ksf::ksApplication* app)
+	bool TempSensor::loop([[maybe_unused]] ksf::ksApplication* app)
 	{
 		if (measurementTimer.triggered())
 			if (auto mqttConnSp{mqttConnWp.lock()})

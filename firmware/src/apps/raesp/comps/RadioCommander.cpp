@@ -165,7 +165,7 @@ namespace apps::raesp::comps
 		command.repeats--;
 	}
 
-	bool RadioCommander::loop(ksf::ksApplication* app)
+	bool RadioCommander::loop([[maybe_unused]] ksf::ksApplication* app)
 	{
 		if (!commandQueue.empty())
 		{
