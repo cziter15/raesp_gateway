@@ -1,8 +1,8 @@
 name: build-firmware
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
+#  schedule:
+#   - cron: '0 0 * * 0'
 #  push:
 #    paths-ignore:
 #      - '**.md'
